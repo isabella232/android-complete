@@ -51,4 +51,9 @@ public class BuildPluginTests {
         LibraryExtension libraryExtension = project.getExtensions().findByType(LibraryExtension.class);
         assertFalse(libraryExtension.getCompileOptions().isCoreLibraryDesugaringEnabled());
     }
+    
+    @Test
+    public void neverFail() {
+        assertTrue(true);
+    }
 }

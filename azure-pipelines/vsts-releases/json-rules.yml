@@ -31,6 +31,8 @@ jobs:
         parameters:
           policheckCmdLineArgsDir: broker
       - template: azure-pipelines/templates/steps/automation-cert.yml@common
+        parameters:
+          envVstsMvnAt: ENV_VSTS_MVN_ANDROIDCOMMON_ACCESSTOKEN
       - task: Gradle@1
         name: Gradle1
         displayName: Assemble

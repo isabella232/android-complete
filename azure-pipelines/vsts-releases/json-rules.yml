@@ -1,4 +1,4 @@
-# File: azure-pipelines\pull-request-validation\broker4j.yml
+# File: azure-pipelines\vsts-releases\json-rules.yml
 # Description: Assemble Json Rules
 # Variable: 'ENV_VSTS_MVN_ANDROIDCOMMON_USERNAME' was defined in the Variables tab
 # Variable: 'mvnAccessToken' was defined in the Variables tab

@@ -1,0 +1,4 @@
+Version 0.0.1
+----------------------------
+- Add a MapRule to generate Map fields
+- Add a custom rule factory that that overrides the TypeRule and also provides a MapRule

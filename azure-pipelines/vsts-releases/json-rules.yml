@@ -39,6 +39,11 @@ jobs:
           publishJUnitResults: false
           jdkArchitecture: x86
           sqAnalysisBreakBuildIfQualityGateFailed: false
+      - task: Gradle@2
+        displayName: Publish
+        inputs:
+          tasks: JsonRules:publish
+          publishJUnitResults: false
       - task: ComponentGovernanceComponentDetection@0
         displayName: Component Detection
 ...

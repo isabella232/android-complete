@@ -1,3 +1,7 @@
+Version 0.0.2
+----------------------------
+- Add a Rule to generate private no-arg constructor if both constructors and setters disabled
+
 Version 0.0.1
 ----------------------------
 - Add a MapRule to generate Map fields

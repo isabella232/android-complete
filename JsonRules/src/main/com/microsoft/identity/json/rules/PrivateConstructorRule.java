@@ -22,39 +22,25 @@
 // THE SOFTWARE.
 package com.microsoft.identity.json.rules;
 
-import com.sun.codemodel.JClass;
-import com.sun.codemodel.JClassContainer;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.sun.codemodel.JDefinedClass;
-import com.sun.codemodel.JPackage;
-import com.sun.codemodel.JType;
+import com.sun.codemodel.JMod;
 
+import org.jsonschema2pojo.Schema;
 import org.jsonschema2pojo.rules.Rule;
-import org.jsonschema2pojo.rules.RuleFactory;
-import org.jsonschema2pojo.util.ParcelableHelper;
 
 /**
- * A {@link RuleFactory} that provides a custom implementation of the {@link org.jsonschema2pojo.rules.TypeRule}
- * and also provides an additional {@link MapRule} as well.
+ * A {@link Rule} that can generate a no-arg private constructor on a {@link JDefinedClass}.
  */
-public class AuthClientJsonSchemaRuleFactory extends RuleFactory {
-
+public class PrivateConstructorRule implements Rule<JDefinedClass, JDefinedClass> {
     @Override
-    public Rule<JClassContainer, JType> getTypeRule() {
-        return new AuthClientJsonSchemaTypeRule(this);
+    public JDefinedClass apply(String nodeName, JsonNode node, JsonNode parent, JDefinedClass instanceClass, Schema currentSchema) {
+        generateNoArgsPrivateConstructor(instanceClass);
+        return instanceClass;
     }
 
-    /**
-     * Provides a rule instance that should be applied when an "object"
-     * declaration is found in the schema.
-     *
-     * @return a schema rule that can handle the "object" declaration.
-     */
-    public Rule<JClassContainer, JClass> getMapRule() {
-        return new MapRule();
-    }
-
-    @Override
-    public Rule<JPackage, JType> getObjectRule() {
-        return new AuthClientJsonSchemaObjectRule(this, new ParcelableHelper(), getReflectionHelper());
+    private void generateNoArgsPrivateConstructor(final JDefinedClass jclass) {
+        // add a no-args constructor to this class
+        jclass.constructor(JMod.PRIVATE);
     }
 }

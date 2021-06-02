@@ -42,7 +42,7 @@ public class MapRule implements Rule<JClassContainer, JClass> {
 
     private JClass addPropertyAsMap(final JClassContainer jclass) {
         return jclass.owner().ref(Map.class).narrow(
-                jclass.owner().ref(String.class), jclass.owner().ref(String.class)
+                jclass.owner().ref(String.class), jclass.owner().ref(Object.class)
         );
     }
 }

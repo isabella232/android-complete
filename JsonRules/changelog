@@ -1,3 +1,7 @@
+Version 0.0.3
+----------------------------
+- Update Map Rule to generate Map that maps Strings keys to Object values
+
 Version 0.0.2
 ----------------------------
 - Add a Rule to generate private no-arg constructor if both constructors and setters disabled

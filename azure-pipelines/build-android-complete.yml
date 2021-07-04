@@ -63,23 +63,23 @@ jobs:
   - checkout: self
     clean: true
     submodules: true
-    path: android-complete
+    path: $(Build.SourcesDirectory)/android-complete
   - checkout: common
     clean: true
     submodules: true
-    path: android-complete\common
+    path: $(Build.SourcesDirectory)/android-complete/common
   - checkout: msal
     clean: true
     submodules: true
-    path: android-complete\msal
+    path: $(Build.SourcesDirectory)/android-complete/msal
   - checkout: adal
     clean: true
     submodules: true
-    path: android-complete\adal
+    path: $(Build.SourcesDirectory)/android-complete/adal
   - checkout: ad_accounts
     clean: true
     submodules: true
-    path: android-complete\ad_accounts
+    path: $(Build.SourcesDirectory)/android-complete/broker
   - ${{ if eq(parameters.productFlavors, 'Dist') }}:
     - task: PowerShell@2
       displayName: Generate Assemble Dist Task

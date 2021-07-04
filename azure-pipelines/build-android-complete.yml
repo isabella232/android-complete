@@ -111,6 +111,7 @@ jobs:
       publishJUnitResults: false
       jdkArchitecture: x86
       sqAnalysisBreakBuildIfQualityGateFailed: false
+      gradleWrapperFile: $(Build.SourcesDirectory)/android-complete/gradlew
       cwd: $(Build.SourcesDirectory)/android-complete
   - task: PublishBuildArtifacts@1
     displayName: Publish Broker Host APK

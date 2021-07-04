@@ -81,7 +81,7 @@ jobs:
     submodules: true
     path: android-complete\ad_accounts
   - ${{ if ne(parameters.productFlavors, 'Dist') }}:
-    - pwsh:
+    - task: PowerShell@2
       displayName: Generate Assemble Dist Task
       inputs:
         targetType: inline

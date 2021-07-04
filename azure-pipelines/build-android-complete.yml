@@ -80,7 +80,7 @@ jobs:
     clean: true
     submodules: true
     path: android-complete\ad_accounts
-  - ${{ if ne(parameters.productFlavors, 'Dist') }}:
+  - ${{ if eq(parameters.productFlavors, 'Dist') }}:
     - task: PowerShell@2
       displayName: Generate Assemble Dist Task
       inputs:
@@ -100,7 +100,7 @@ jobs:
               $assembleTask = $assembleTask + " -PmsalVersion=" + "$(msal_version)"
           }
           Write-Host "##vso[task.setvariable variable=AssembleTask;]$assembleTask"
-  - ${{ if ne(parameters.productFlavors, 'Local') }}:
+  - ${{ if eq(parameters.productFlavors, 'Local') }}:
     - pwsh: echo "##vso[task.setvariable variable=AssembleTask;]assembleLocal${{ parameters.signingConfigurations }}"
       displayName: Generate Assemble Local Task
   - task: Gradle@1
@@ -111,9 +111,10 @@ jobs:
       publishJUnitResults: false
       jdkArchitecture: x86
       sqAnalysisBreakBuildIfQualityGateFailed: false
+      cwd: $(Build.SourcesDirectory)/android-complete
   - task: PublishBuildArtifacts@1
     displayName: Publish Broker Host APK
     inputs:
-      PathtoPublish: $(Build.SourcesDirectory)/userapp/build/outputs/apk
+      PathtoPublish: $(Build.SourcesDirectory)/android-complete/userapp/build/outputs/apk
       ArtifactName: BrokerHost
 ...

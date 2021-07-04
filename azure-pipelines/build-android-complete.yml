@@ -63,23 +63,23 @@ jobs:
   - checkout: self
     clean: true
     submodules: true
-    path: $(Build.SourcesDirectory)/android-complete
+    path: $(Build.SourcesDirectory)\android-complete
   - checkout: common
     clean: true
     submodules: true
-    path: $(Build.SourcesDirectory)/android-complete/common
+    path: $(Build.SourcesDirectory)\android-complete\common
   - checkout: msal
     clean: true
     submodules: true
-    path: $(Build.SourcesDirectory)/android-complete/msal
+    path: $(Build.SourcesDirectory)\android-complete\msal
   - checkout: adal
     clean: true
     submodules: true
-    path: $(Build.SourcesDirectory)/android-complete/adal
+    path: $(Build.SourcesDirectory)\android-complete\adal
   - checkout: ad_accounts
     clean: true
     submodules: true
-    path: $(Build.SourcesDirectory)/android-complete/broker
+    path: $(Build.SourcesDirectory)\android-complete\broker
   - ${{ if eq(parameters.productFlavors, 'Dist') }}:
     - task: PowerShell@2
       displayName: Generate Assemble Dist Task
@@ -111,11 +111,11 @@ jobs:
       publishJUnitResults: false
       jdkArchitecture: x86
       sqAnalysisBreakBuildIfQualityGateFailed: false
-      gradleWrapperFile: $(Build.SourcesDirectory)/android-complete/gradlew
-      cwd: $(Build.SourcesDirectory)/android-complete
+      gradleWrapperFile: $(Build.SourcesDirectory)\android-complete\gradlew
+      cwd: $(Build.SourcesDirectory)\android-complete
   - task: PublishBuildArtifacts@1
     displayName: Publish Broker Host APK
     inputs:
-      PathtoPublish: $(Build.SourcesDirectory)/android-complete/userapp/build/outputs/apk
+      PathtoPublish: $(Build.SourcesDirectory)\android-complete\userapp\build\outputs\apk
       ArtifactName: BrokerHost
 ...

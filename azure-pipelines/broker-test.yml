@@ -12,12 +12,14 @@ name: $(date:yyyyMMdd)$(rev:.r)
 trigger: none
 pr: none
 
-parameters:
-- name: path
-  type: string
-- name: filename
-  type: string
+resources:
+  pipelines:
+  - pipeline: authenticator  # identifier for the resource used in pipeline resource variables
+    connection: MSAZURE_SC
+    project: One # project for the source; optional for current project
+    source: AndroidBuild  # name of the pipeline that produces an artifact
 
+    
 jobs:
 - job: brokerhost
   displayName: test
@@ -25,6 +27,12 @@ jobs:
     name: Hosted Windows 2019 with VS2019
   steps:
   - checkout: none
-  - pwsh: Get-Content -Path ${{ parameters.filename }}
-    workingDirectory: ${{ parameters.path }}
-    displayName: test
+  - pwsh: echo "hola mundo"
+  - task: DownloadPipelineArtifact@2
+    displayName: Download Pipeline Artifacts
+    inputs:
+      artifact: MicrosoftAuthenticatorAndroid
+      path: $(Build.SourcesDirectory)
+  - pwsh: dir
+    workingDirectory: $(Build.SourcesDirectory)
+    displayName: list files

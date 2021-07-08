@@ -15,7 +15,7 @@ pr: none
 resources:
   pipelines:
   - pipeline: authenticator  # identifier for the resource used in pipeline resource variables
-    connection: MSAZURE_SC
+    #connection: MSAZURE_SC
     project: One # project for the source; optional for current project
     source: AndroidBuild  # name of the pipeline that produces an artifact
 

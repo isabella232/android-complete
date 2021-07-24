@@ -28,7 +28,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
 
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = true)
 @Getter
 public class MavenComponent extends Component {
 

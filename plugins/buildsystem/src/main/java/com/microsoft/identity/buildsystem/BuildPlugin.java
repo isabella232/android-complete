@@ -23,9 +23,17 @@
 package com.microsoft.identity.buildsystem;
 
 import com.android.build.gradle.LibraryExtension;
+import com.microsoft.identity.buildsystem.rendering.AbstractDependencyRenderer;
+import com.microsoft.identity.buildsystem.rendering.ConsoleDependencyRenderer;
+import com.microsoft.identity.buildsystem.rendering.IDependencyFormatter;
+import com.microsoft.identity.buildsystem.rendering.SimpleDependencyFormatter;
+import com.microsoft.identity.buildsystem.rendering.cgmanifest.CGManifestDependencyJsonFormatter;
+import com.microsoft.identity.buildsystem.rendering.cgmanifest.CGManifestDependencyRenderer;
+
 import org.gradle.api.JavaVersion;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
+import org.gradle.api.tasks.diagnostics.DependencyReportTask;
 
 public class BuildPlugin implements Plugin<Project> {
 
@@ -49,6 +57,13 @@ public class BuildPlugin implements Plugin<Project> {
             }else{
                 project1.getLogger().warn("DESUGARING DISABLED");
             }
+
+            final DependencyReportTask consoleTask = project.getTasks().create("printDependenciesToConsole", DependencyReportTask.class);
+            final IDependencyFormatter dependencyFormatter = new SimpleDependencyFormatter();
+            consoleTask.setRenderer(new ConsoleDependencyRenderer(dependencyFormatter));
+
+            final DependencyReportTask cgManifestTask = project.getTasks().create("createDependenciesCgManifest", DependencyReportTask.class);
+            cgManifestTask.setRenderer(new CGManifestDependencyRenderer());
         });
 
         SpotBugs.applySpotBugsPlugin(project);

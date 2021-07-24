@@ -20,20 +20,12 @@
 //  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
-package com.microsoft.identity.buildsystem.rendering.cgmanifest;
+package com.microsoft.identity.buildsystem.rendering.settings;
 
-import com.microsoft.identity.buildsystem.rendering.IMavenDependency;
+import org.gradle.api.provider.Property;
 
-public class MavenComponentDependencyAdapter implements IDependencyComponentAdapter<MavenComponent> {
-    @Override
-    public MavenComponent adapt(IMavenDependency dependency) {
-        final MavenComponentInfo mavenComponentInfo = new MavenComponentInfo(
-                dependency.getGroup(),
-                dependency.getName(),
-                dependency.getVersion()
-        );
+public abstract class DependencyRendererSettingsExtension {
 
-        final MavenComponent mavenComponent = new MavenComponent(mavenComponentInfo);
-        return mavenComponent;
-    }
+    abstract public Property<Boolean> getRenderProjectDependency();
+
 }

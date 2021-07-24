@@ -27,13 +27,18 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.microsoft.identity.buildsystem.rendering.AbstractDependencyRenderer;
+import com.microsoft.identity.buildsystem.rendering.DependencyType;
+import com.microsoft.identity.buildsystem.rendering.GradleDependency;
+import com.microsoft.identity.buildsystem.rendering.IMavenDependency;
+import com.microsoft.identity.buildsystem.rendering.settings.DependencyRendererSettings;
 
 import org.gradle.api.Project;
-import org.gradle.api.artifacts.Dependency;
 
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+
+import lombok.NonNull;
 
 public class CGManifestDependencyRenderer extends AbstractDependencyRenderer {
 
@@ -47,10 +52,19 @@ public class CGManifestDependencyRenderer extends AbstractDependencyRenderer {
     private final IDependencyComponentAdapter<MavenComponent> mDependencyComponentAdapter =
             new MavenComponentDependencyAdapter();
 
+    public CGManifestDependencyRenderer(DependencyRendererSettings dependencyRendererSettings) {
+        super(dependencyRendererSettings);
+    }
+
     @Override
-    public void render(Dependency dependency) {
-        final MavenComponent mavenComponent = mDependencyComponentAdapter.adapt(dependency);
-        mCgManifest.addRegistration(new Registration(mavenComponent, false));
+    public void render(@NonNull GradleDependency gradleDependency) {
+        final MavenComponent mavenComponent = mDependencyComponentAdapter.adapt(
+                gradleDependency.getMavenDependency()
+        );
+        mCgManifest.addRegistration(new Registration(
+                mavenComponent,
+                gradleDependency.getDependencyType() == DependencyType.DEVELOPMENT
+        ));
     }
 
     @Override

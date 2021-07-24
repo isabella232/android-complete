@@ -25,7 +25,9 @@ package com.microsoft.identity.buildsystem.rendering.cgmanifest;
 import com.google.gson.annotations.SerializedName;
 
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode
 @AllArgsConstructor
 public abstract class Component {
 

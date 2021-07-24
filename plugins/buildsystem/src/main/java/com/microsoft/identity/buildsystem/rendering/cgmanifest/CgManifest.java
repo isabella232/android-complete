@@ -24,23 +24,25 @@ package com.microsoft.identity.buildsystem.rendering.cgmanifest;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
+import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 
+@EqualsAndHashCode
 public class CgManifest {
 
     @SerializedName(SerializedNames.REGISTRATIONS)
-    private final List<Registration> mRegistrations = new ArrayList<>();
+    private final Set<Registration> mRegistrations = new HashSet<>();
 
     public void addRegistration(@NonNull final Registration registration) {
         mRegistrations.add(registration);
     }
 
-    public List<Registration> getRegistrations() {
-        return Collections.unmodifiableList(mRegistrations);
+    public Set<Registration> getRegistrations() {
+        return Collections.unmodifiableSet(mRegistrations);
     }
 
     private static class SerializedNames {

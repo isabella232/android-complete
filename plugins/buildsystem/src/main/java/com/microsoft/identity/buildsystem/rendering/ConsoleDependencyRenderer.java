@@ -22,19 +22,23 @@
 //  THE SOFTWARE.
 package com.microsoft.identity.buildsystem.rendering;
 
-import org.gradle.api.artifacts.Dependency;
+import com.microsoft.identity.buildsystem.rendering.settings.DependencyRendererSettings;
+
+import lombok.NonNull;
 
 public class ConsoleDependencyRenderer extends AbstractDependencyRenderer {
 
     private final IDependencyFormatter mDependencyFormatter;
 
-    public ConsoleDependencyRenderer(IDependencyFormatter dependencyFormatter) {
+    public ConsoleDependencyRenderer(@NonNull final DependencyRendererSettings dependencyRendererSettings,
+                                     @NonNull final IDependencyFormatter dependencyFormatter) {
+        super(dependencyRendererSettings);
         mDependencyFormatter = dependencyFormatter;
     }
 
     @Override
-    public void render(Dependency dependency) {
-        render(mDependencyFormatter.formatDependency(dependency));
+    public void render(@NonNull GradleDependency gradleDependency) {
+        render(mDependencyFormatter.formatDependency(gradleDependency.getMavenDependency()));
     }
 
     private void render(String formattedDependency) {

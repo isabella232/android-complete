@@ -24,9 +24,11 @@ package com.microsoft.identity.buildsystem.rendering.cgmanifest;
 
 import com.google.gson.annotations.SerializedName;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
 
+@EqualsAndHashCode
 @Getter
 public class MavenComponent extends Component {
 

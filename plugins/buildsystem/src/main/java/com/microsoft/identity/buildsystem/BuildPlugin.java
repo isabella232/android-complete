@@ -23,12 +23,14 @@
 package com.microsoft.identity.buildsystem;
 
 import com.android.build.gradle.LibraryExtension;
-import com.microsoft.identity.buildsystem.rendering.AbstractDependencyRenderer;
 import com.microsoft.identity.buildsystem.rendering.ConsoleDependencyRenderer;
 import com.microsoft.identity.buildsystem.rendering.IDependencyFormatter;
 import com.microsoft.identity.buildsystem.rendering.SimpleDependencyFormatter;
-import com.microsoft.identity.buildsystem.rendering.cgmanifest.CGManifestDependencyJsonFormatter;
 import com.microsoft.identity.buildsystem.rendering.cgmanifest.CGManifestDependencyRenderer;
+import com.microsoft.identity.buildsystem.rendering.settings.DependencyRendererSettings;
+import com.microsoft.identity.buildsystem.rendering.settings.DependencyRendererSettingsAdapter;
+import com.microsoft.identity.buildsystem.rendering.settings.DependencyRendererSettingsExtension;
+import com.microsoft.identity.buildsystem.rendering.settings.IDependencyRendererSettingsAdapter;
 
 import org.gradle.api.JavaVersion;
 import org.gradle.api.Plugin;
@@ -43,33 +45,44 @@ public class BuildPlugin implements Plugin<Project> {
     private final static String JAVA_SOURCE_COMPATIBILITY_PROPERTY = "sourceCompatibility";
     private final static String JAVA_TARGET_COMPATIBILITY_PROPERTY = "targetCompatibility";
 
+    private final IDependencyRendererSettingsAdapter mDependencyRendererSettingsAdapter =
+            new DependencyRendererSettingsAdapter();
+
     @Override
     public void apply(final Project project) {
 
         final BuildPluginExtension config = project.getExtensions()
                 .create("buildSystem", BuildPluginExtension.class);
 
+        final DependencyRendererSettingsExtension dependencyRendererSettingsExtension =
+                project.getExtensions().create("dependencyRendering", DependencyRendererSettingsExtension.class);
+
         project.afterEvaluate(project1 -> {
-            if(config.getDesugar().get()) {
+            if (config.getDesugar().get()) {
                 project1.getLogger().warn("DESUGARING ENABLED");
                 applyDesugaringToAndroidProject(project1);
                 applyJava8ToJavaProject(project1);
-            }else{
+            } else {
                 project1.getLogger().warn("DESUGARING DISABLED");
             }
 
+            final DependencyRendererSettings dependencyRendererSettings =
+                    mDependencyRendererSettingsAdapter.adapt(dependencyRendererSettingsExtension);
+
             final DependencyReportTask consoleTask = project.getTasks().create("printDependenciesToConsole", DependencyReportTask.class);
             final IDependencyFormatter dependencyFormatter = new SimpleDependencyFormatter();
-            consoleTask.setRenderer(new ConsoleDependencyRenderer(dependencyFormatter));
+            consoleTask.setRenderer(new ConsoleDependencyRenderer(
+                    dependencyRendererSettings, dependencyFormatter
+            ));
 
             final DependencyReportTask cgManifestTask = project.getTasks().create("createDependenciesCgManifest", DependencyReportTask.class);
-            cgManifestTask.setRenderer(new CGManifestDependencyRenderer());
+            cgManifestTask.setRenderer(new CGManifestDependencyRenderer(dependencyRendererSettings));
         });
 
         SpotBugs.applySpotBugsPlugin(project);
     }
 
-    private void applyDesugaringToAndroidProject(final Project project){
+    private void applyDesugaringToAndroidProject(final Project project) {
 
         project.getPluginManager().withPlugin(ANDROID_LIBRARY_PLUGIN_ID, appliedPlugin -> {
             LibraryExtension libraryExtension = project.getExtensions().findByType(LibraryExtension.class);

@@ -20,23 +20,19 @@
 //  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
-package com.microsoft.identity.buildsystem.rendering.cgmanifest;
+package com.microsoft.identity.buildsystem.rendering.settings;
 
-import com.google.gson.Gson;
-import com.microsoft.identity.buildsystem.rendering.IDependencyFormatter;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.experimental.Accessors;
 
-import org.gradle.api.artifacts.Dependency;
+@Builder
+@Getter
+@Accessors(prefix = "m")
+public class DependencyRendererSettings {
+    @Builder.Default
+    private final boolean mRenderProjectDependency = false;
 
-public class CGManifestDependencyJsonFormatter implements IDependencyFormatter {
-
-    private static final Gson GSON = new Gson();
-
-    private final IDependencyComponentAdapter<MavenComponent> mDependencyComponentAdapter =
-            new MavenComponentDependencyAdapter();
-
-    @Override
-    public String formatDependency(Dependency dependency) {
-        final MavenComponent mavenComponent = mDependencyComponentAdapter.adapt(dependency);
-        return GSON.toJson(mavenComponent);
-    }
+    @Builder.Default
+    private final boolean mRenderTransitiveDependencies = true;
 }

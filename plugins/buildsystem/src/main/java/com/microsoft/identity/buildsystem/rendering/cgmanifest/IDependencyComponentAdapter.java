@@ -22,9 +22,9 @@
 //  THE SOFTWARE.
 package com.microsoft.identity.buildsystem.rendering.cgmanifest;
 
-import org.gradle.api.artifacts.Dependency;
+import com.microsoft.identity.buildsystem.rendering.IMavenDependency;
 
 public interface IDependencyComponentAdapter<T extends Component> {
 
-    T adapt(Dependency dependency);
+    T adapt(IMavenDependency dependency);
 }

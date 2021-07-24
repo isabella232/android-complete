@@ -23,6 +23,9 @@
 package com.microsoft.identity.buildsystem.rendering.cgmanifest;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import com.microsoft.identity.buildsystem.rendering.AbstractDependencyRenderer;
 
 import org.gradle.api.Project;
@@ -38,7 +41,8 @@ public class CGManifestDependencyRenderer extends AbstractDependencyRenderer {
 
     final CgManifest mCgManifest = new CgManifest();
 
-    private static final Gson GSON = new Gson();
+    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+    private static final JsonParser JSON_PARSER = new JsonParser();
 
     private final IDependencyComponentAdapter<MavenComponent> mDependencyComponentAdapter =
             new MavenComponentDependencyAdapter();
@@ -52,15 +56,18 @@ public class CGManifestDependencyRenderer extends AbstractDependencyRenderer {
     @Override
     public void completeProject(Project project) {
         super.completeProject(project);
-        System.out.println(GSON.toJson(mCgManifest));
-        dumpToFile();
+        final String cgManifestJson = GSON.toJson(mCgManifest);
+        final JsonElement cgManifestJsonElement = JSON_PARSER.parse(cgManifestJson);
+        final String cgManifestPrettyJson = GSON.toJson(cgManifestJsonElement);
+        System.out.println(cgManifestPrettyJson);
+        dumpToCgManifestJsonFile(cgManifestPrettyJson);
     }
 
-    private void dumpToFile() {
+    private void dumpToCgManifestJsonFile(final String text) {
         try {
             final FileWriter fileWriter = new FileWriter(CG_MANIFEST_FILE_NAME);
             PrintWriter printWriter = new PrintWriter(fileWriter);
-            printWriter.print(GSON.toJson(mCgManifest));
+            printWriter.print(text);
             printWriter.close();
         } catch (final IOException e) {
             throw new RuntimeException(e);

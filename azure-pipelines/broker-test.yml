@@ -13,7 +13,7 @@ resources:
 #    registry: authclient.azurecr.io # registry for container images
 #    repository: samples/dbi-instrumented-api30 # name of the container image repository in ACR
 
-  container:
+  containers:
   - container: mycontainer
     image: authclient.azurecr.io/amples/dbi-instrumented-api30:latest
     endpoint: 94bfc8c4-2d8e-4523-b370-3edf4b3d966e

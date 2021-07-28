@@ -1,38 +1,37 @@
-# File: azure-pipelines\build-broker-host.yml
-# Description: Generate BrokerHost APK
-# use <project>_branch variables to build the Local version
-# use <project>_version variables to build the Dist version
-# Variable '[adal, common, msal, ad_accounts]_branch' was defined in the Variables tab
-# Variable '[adal, common, msal, ad_accounts]_version' was defined in the Variables tab
-# Variable: 'ENV_VSTS_MVN_ANDROID_MSAL_USERNAME' was defined in the Variables tab
-# Variable: 'mvnAccessToken' was defined in the Variables tab
-# https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate
+
 name: $(date:yyyyMMdd)$(rev:.r)
 
 trigger: none
 pr: none
 
 resources:
-  pipelines:
-  - pipeline: authenticator  # identifier for the resource used in pipeline resource variables
-    connection: MSAZURE_SC
-    project: One # project for the source; optional for current project
-    source: AndroidBuild  # name of the pipeline that produces an artifact
+  containers:
+  - container: mycontainer  # identifier (A-Z, a-z, 0-9, and underscore)
+    type: ACR # type of the registry like ACR, GCR etc. 
+    azureSubscription: AuthClient # Azure subscription (ARM service connection) for container registry;
+    resourceGroup: AuthClientAzureContainers # resource group for your ACR
+    registry: authclient.azurecr.io # registry for container images
+    repository: samples/dbi-instrumented-api30 # name of the container image repository in ACR
 
-    
+    #image: string  # container image name
+    #options: string  # arguments to pass to container at startup
+    #endpoint: string  # reference to a service connection for the private registry
+    #env: { string: string }  # list of environment variables to add
+    #ports: [ string ] # ports to expose on the container
+    #volumes: [ string ] # volumes to mount on the container
+    #mapDockerSocket: bool # whether to map in the Docker daemon socket; defaults to true
+    #mountReadOnly:  # volumes to mount read-only - all default to false
+    #  externals: boolean  # components required to talk to the agent
+    #  tasks: boolean  # tasks required by the job
+    #  tools: boolean  # installable tools like Python and Ruby
+    #  work: boolean # the work directory
+
+
 jobs:
-- job: brokerhost
+- job: test
   displayName: test
   pool:
-    name: Hosted Windows 2019 with VS2019
+    vmImage: 'ubuntu-18.04'
   steps:
   - checkout: none
-  - pwsh: echo "hola mundo"
-  - task: DownloadPipelineArtifact@2
-    displayName: Download Pipeline Artifacts
-    inputs:
-      artifact: MicrosoftAuthenticatorAndroid
-      path: $(Build.SourcesDirectory)
-  - pwsh: dir
-    workingDirectory: $(Build.SourcesDirectory)
-    displayName: list files
+  - script: printenv

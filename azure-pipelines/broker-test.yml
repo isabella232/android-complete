@@ -48,10 +48,10 @@ jobs:
       echo $(resources.container.mycontainer.digest)
       echo $(resources.container.mycontainer.URI)
       echo $(resources.container.mycontainer.location)
-#  - script: echo "I can run inside the container (it starts by default)"
-#    target:
-#      container: mycontainer
-#  - task: Docker@2
-#    inputs:
-#      command: stop
-#      container: mycontainer
+  - script: echo "I can run inside the container (it starts by default)"
+    target:
+      container: mycontainer
+  - task: Docker@2
+    inputs:
+      command: stop
+      container: mycontainer

@@ -5,18 +5,15 @@ trigger: none
 pr: none
 
 resources:
-#  containers:
-#  - container: mycontainer  # identifier (A-Z, a-z, 0-9, and underscore)
-#    type: ACR # type of the registry like ACR, GCR etc. 
-#    azureSubscription: AuthClient # Azure subscription (ARM service connection) for container registry;
-#    resourceGroup: AuthClientAzureContainers # resource group for your ACR
-#    registry: authclient.azurecr.io # registry for container images
-#    repository: samples/dbi-instrumented-api30 # name of the container image repository in ACR
-
   containers:
-  - container: mycontainer
-    image: authclient.azurecr.io/amples/dbi-instrumented-api30:latest
-    endpoint: 94bfc8c4-2d8e-4523-b370-3edf4b3d966e
+  - container: mycontainer  # identifier (A-Z, a-z, 0-9, and underscore)
+    type: ACR # type of the registry like ACR, GCR etc. 
+    azureSubscription: AuthClient # Azure subscription (ARM service connection) for container registry;
+    resourceGroup: AuthClientAzureContainers # resource group for your ACR
+    registry: authclient.azurecr.io # registry for container images
+    repository: samples/dbi-instrumented-api30 # name of the container image repository in ACR
+
+
 
     #image: string  # container image name
     #options: string  # arguments to pass to container at startup

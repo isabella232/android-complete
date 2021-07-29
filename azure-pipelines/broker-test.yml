@@ -9,7 +9,6 @@ resources:
   - container: mycontainer
     image: authclient.azurecr.io/samples/dbi-instrumented-api30:latest
     endpoint: AuthClient
-    type: ACR
 
 
     #options: string  # arguments to pass to container at startup
@@ -43,8 +42,6 @@ jobs:
     target:
       container: mycontainer
   - script: echo "I can run inside the container (it starts by default)"
-    target:
-      container: mycontainer
   - task: Docker@2
     inputs:
       command: stop

@@ -5,15 +5,18 @@ trigger: none
 pr: none
 
 resources:
+#  containers:
+#  - container: mycontainer  # identifier (A-Z, a-z, 0-9, and underscore)
+#    type: ACR # type of the registry like ACR, GCR etc. 
+#    azureSubscription: AuthClient # Azure subscription (ARM service connection) for container registry;
+#    resourceGroup: AuthClientAzureContainers # resource group for your ACR
+#    registry: authclient.azurecr.io # registry for container images
+#    repository: samples/dbi-instrumented-api30 # name of the container image repository in ACR
+
   containers:
-  - container: mycontainer  # identifier (A-Z, a-z, 0-9, and underscore)
-    type: ACR # type of the registry like ACR, GCR etc. 
-    azureSubscription: AuthClient # Azure subscription (ARM service connection) for container registry;
-    resourceGroup: AuthClientAzureContainers # resource group for your ACR
-    registry: authclient.azurecr.io # registry for container images
-    repository: samples/dbi-instrumented-api30 # name of the container image repository in ACR
-
-
+  - container: mycontainer
+    image: authclient.azurecr.io/samples/dbi-instrumented-api30:latest
+    endpoint: AuthClient
 
     #image: string  # container image name
     #options: string  # arguments to pass to container at startup
@@ -45,10 +48,10 @@ jobs:
       echo $(resources.container.mycontainer.digest)
       echo $(resources.container.mycontainer.URI)
       echo $(resources.container.mycontainer.location)
-  - script: echo "I can run inside the container (it starts by default)"
-    target:
-      container: mycontainer
-  - task: Docker@2
-    inputs:
-      command: stop
-      container: mycontainer
+#  - script: echo "I can run inside the container (it starts by default)"
+#    target:
+#      container: mycontainer
+#  - task: Docker@2
+#    inputs:
+#      command: stop
+#      container: mycontainer

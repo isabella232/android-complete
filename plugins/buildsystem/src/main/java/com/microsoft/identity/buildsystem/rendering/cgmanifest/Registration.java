@@ -24,11 +24,17 @@ package com.microsoft.identity.buildsystem.rendering.cgmanifest;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Set;
+
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.experimental.Accessors;
 
-@EqualsAndHashCode
+@EqualsAndHashCode()
 @AllArgsConstructor
+@Getter
+@Accessors(prefix = "m")
 public class Registration {
 
     @SerializedName(SerializedNames.COMPONENT)
@@ -37,8 +43,12 @@ public class Registration {
     @SerializedName(SerializedNames.DEVELOPMENT_DEPENDENCY)
     private final boolean mDevelopmentDependency;
 
+    @SerializedName(SerializedNames.DEPENDENCY_ROOTS)
+    private final Set<Component> mDependencyRoots;
+
     private static class SerializedNames {
         private static final String COMPONENT = "Component";
         private static final String DEVELOPMENT_DEPENDENCY = "DevelopmentDependency";
+        private static final String DEPENDENCY_ROOTS = "DependencyRoots";
     }
 }

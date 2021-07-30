@@ -22,9 +22,12 @@
 //  THE SOFTWARE.
 package com.microsoft.identity.buildsystem.rendering;
 
+import java.util.Set;
+
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.experimental.Accessors;
 
 @AllArgsConstructor
@@ -32,6 +35,22 @@ import lombok.experimental.Accessors;
 @Accessors(prefix = "m")
 @EqualsAndHashCode
 public class GradleDependency {
-    private final DependencyType mDependencyType;
+    private DependencyType mDependencyType;
     private final IMavenDependency mMavenDependency;
+    private final Set<IMavenDependency> mDependencyRoots;
+
+    public void addRootDependency(@NonNull final IMavenDependency mavenDependency) {
+        mDependencyRoots.add(mavenDependency);
+    }
+
+    public void setDependencyType(@NonNull final DependencyType dependencyType) {
+        mDependencyType = dependencyType;
+    }
+
+    @Override
+    public String toString() {
+        return "dep = " + mMavenDependency.toString() + " scope = " + mDependencyType.name()
+                + " roots = " + mDependencyRoots.toString();
+
+    }
 }

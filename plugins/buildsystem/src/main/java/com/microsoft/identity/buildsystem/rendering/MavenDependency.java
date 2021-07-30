@@ -32,7 +32,15 @@ import lombok.experimental.Accessors;
 @Accessors(prefix = "m")
 @EqualsAndHashCode
 public class MavenDependency implements IMavenDependency {
+
+    private static final IDependencyFormatter sDependencyFormatter = new SimpleDependencyFormatter();
+
     private final String mGroup;
     private final String mName;
     private final String mVersion;
+
+    @Override
+    public String toString() {
+        return sDependencyFormatter.formatDependency(this);
+    }
 }

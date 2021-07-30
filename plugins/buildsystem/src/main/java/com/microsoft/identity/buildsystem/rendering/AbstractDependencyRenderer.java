@@ -24,17 +24,24 @@ package com.microsoft.identity.buildsystem.rendering;
 
 import com.microsoft.identity.buildsystem.rendering.settings.DependencyRendererSettings;
 
+import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.Dependency;
 import org.gradle.api.artifacts.DependencySet;
 import org.gradle.api.artifacts.ProjectDependency;
+import org.gradle.api.artifacts.component.ProjectComponentIdentifier;
 import org.gradle.api.artifacts.result.DependencyResult;
 import org.gradle.api.artifacts.result.ResolutionResult;
+import org.gradle.api.artifacts.result.ResolvedComponentResult;
 import org.gradle.api.tasks.diagnostics.internal.DependencyReportRenderer;
 import org.gradle.api.tasks.diagnostics.internal.TextReportRenderer;
 import org.gradle.internal.deprecation.DeprecatableConfiguration;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import lombok.AllArgsConstructor;
@@ -53,7 +60,9 @@ public abstract class AbstractDependencyRenderer extends TextReportRenderer impl
 
     public abstract void render(@NonNull final GradleDependency gradleDependency);
 
-    private final Set<GradleDependency> mRenderedDependencies = new HashSet<>();
+    public abstract void complete(@NonNull final Collection<GradleDependency> gradleDependencies);
+
+    private final Map<String, GradleDependency> mRenderedDepMap = new HashMap<>();
 
     @Override
     public void startConfiguration(Configuration configuration) {
@@ -62,11 +71,16 @@ public abstract class AbstractDependencyRenderer extends TextReportRenderer impl
     }
 
     @Override
+    public void completeProject(Project project) {
+        complete(mRenderedDepMap.values());
+    }
+
+
+    @Override
     public void render(Configuration configuration) {
         if (mDependencyRendererSettings.isRenderTransitiveDependencies() && canBeResolved(configuration)) {
             final ResolutionResult result = configuration.getIncoming().getResolutionResult();
-            final Set<? extends DependencyResult> results = result.getAllDependencies();
-            renderDependencyResultSet(configuration, results);
+            result.allDependencies(dependencyResult -> renderDependencyResult(configuration, dependencyResult));
         } else {
             final DependencySet dependencies = configuration.getDependencies();
             renderDependencySet(configuration, dependencies);
@@ -85,25 +99,31 @@ public abstract class AbstractDependencyRenderer extends TextReportRenderer impl
         );
     }
 
-    private void renderDependencyResultSet(@NonNull final Configuration configuration,
-                                           @NonNull final Set<? extends DependencyResult> dependencyResults) {
-        dependencyResults.iterator().forEachRemaining(
-                dependencyResult -> renderDependencyResult(configuration, dependencyResult)
-        );
-    }
-
     private void renderDependencyResult(@NonNull final Configuration configuration,
                                         @NonNull final DependencyResult dependencyResult) {
-        final IMavenDependency mavenDependency = sMavenDependencyAdapter.adapt(dependencyResult);
-        if (mavenDependency != null) {
-            renderInternal(configuration, mavenDependency);
+        final IMavenDependency depToRender = sMavenDependencyAdapter.adapt(dependencyResult);
+
+        final ResolvedComponentResult rootResult = dependencyResult.getFrom();
+
+        if (depToRender != null) {
+            IMavenDependency depRoot;
+
+            if (rootResult.getId() instanceof ProjectComponentIdentifier && !mDependencyRendererSettings.isRenderProjectDependency()) {
+                depRoot = null;
+            } else {
+                depRoot = sMavenDependencyAdapter.adapt(
+                        rootResult.getModuleVersion()
+                );
+            }
+
+            renderInternal(configuration, depToRender, depRoot);
         }
     }
 
     private void renderDependency(@NonNull final Configuration configuration,
                                   @NonNull final Dependency dependency) {
         if (shouldRender(dependency)) {
-            renderInternal(configuration, sMavenDependencyAdapter.adapt(dependency));
+            renderInternal(configuration, sMavenDependencyAdapter.adapt(dependency), null);
         }
     }
 
@@ -117,23 +137,36 @@ public abstract class AbstractDependencyRenderer extends TextReportRenderer impl
         return configuration.isCanBeResolved() && !isDeprecatedForResolving;
     }
 
-    private boolean alreadyRendered(@NonNull final GradleDependency gradleDependency) {
-        return mRenderedDependencies.contains(gradleDependency);
-    }
+    private void renderInternal(@NonNull final Configuration configuration,
+                                @NonNull final IMavenDependency mavenDependency,
+                                @Nullable final IMavenDependency depRoot) {
+        final DependencyType incomingDependencyType = sConfigurationAdapter.adapt(configuration);
 
-    private void renderInternal(@NonNull final Configuration configuration, @NonNull final IMavenDependency mavenDependency) {
-        final DependencyType dependencyType = sConfigurationAdapter.adapt(configuration);
+        GradleDependency gradleDependency = mRenderedDepMap.get(mavenDependency.toString());
 
-        final GradleDependency gradleDependency = new GradleDependency(
-                dependencyType,
-                mavenDependency
-        );
+        if (gradleDependency == null) {
+            final Set<IMavenDependency> depRoots = new HashSet<>();
 
-        if (alreadyRendered(gradleDependency)) {
-            return;
+            if (depRoot != null) {
+                depRoots.add(depRoot);
+            }
+
+            gradleDependency = new GradleDependency(
+                    incomingDependencyType,
+                    mavenDependency,
+                    depRoots
+            );
+        } else {
+            if (depRoot != null) {
+                gradleDependency.addRootDependency(depRoot);
+            }
+
+            if (incomingDependencyType == DependencyType.RUNTIME) {
+                gradleDependency.setDependencyType(incomingDependencyType);
+            }
         }
 
         render(gradleDependency);
-        mRenderedDependencies.add(gradleDependency);
+        mRenderedDepMap.put(mavenDependency.toString(), gradleDependency);
     }
 }

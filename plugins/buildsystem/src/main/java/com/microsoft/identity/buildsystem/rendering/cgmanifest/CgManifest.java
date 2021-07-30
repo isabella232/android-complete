@@ -24,7 +24,6 @@ package com.microsoft.identity.buildsystem.rendering.cgmanifest;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -42,7 +41,7 @@ public class CgManifest {
     }
 
     public Set<Registration> getRegistrations() {
-        return Collections.unmodifiableSet(mRegistrations);
+        return mRegistrations;
     }
 
     private static class SerializedNames {

@@ -27,9 +27,11 @@ import com.google.gson.annotations.SerializedName;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.experimental.Accessors;
 
 @EqualsAndHashCode(callSuper = true)
 @Getter
+@Accessors(prefix = "m")
 public class MavenComponent extends Component {
 
     private static final String MAVEN_COMPONENT_TYPE_NAME = "Maven";

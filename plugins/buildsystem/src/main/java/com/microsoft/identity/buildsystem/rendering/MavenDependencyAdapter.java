@@ -48,6 +48,15 @@ public class MavenDependencyAdapter implements IMavenDependencyAdapter {
         }
     }
 
+    @Override
+    public IMavenDependency adapt(@NonNull final ModuleVersionIdentifier moduleVersionIdentifier) {
+        final String group = moduleVersionIdentifier.getGroup();
+        final String name = moduleVersionIdentifier.getName();
+        final String version = moduleVersionIdentifier.getVersion();
+
+        return new MavenDependency(group, name, version);
+    }
+
     private IMavenDependency adapt(ResolvedDependencyResult resolvedDependencyResult) {
         final ModuleVersionIdentifier selectedModuleVersion = resolvedDependencyResult.getSelected().getModuleVersion();
 
@@ -55,10 +64,6 @@ public class MavenDependencyAdapter implements IMavenDependencyAdapter {
             return null;
         }
 
-        final String group = selectedModuleVersion.getGroup();
-        final String name = selectedModuleVersion.getName();
-        final String version = selectedModuleVersion.getVersion();
-
-        return new MavenDependency(group, name, version);
+        return adapt(selectedModuleVersion);
     }
 }

@@ -24,6 +24,8 @@ package com.microsoft.identity.buildsystem.rendering;
 
 import com.microsoft.identity.buildsystem.rendering.settings.DependencyRendererSettings;
 
+import java.util.Collection;
+
 import lombok.NonNull;
 
 public class ConsoleDependencyRenderer extends AbstractDependencyRenderer {
@@ -39,6 +41,15 @@ public class ConsoleDependencyRenderer extends AbstractDependencyRenderer {
     @Override
     public void render(@NonNull GradleDependency gradleDependency) {
         render(mDependencyFormatter.formatDependency(gradleDependency.getMavenDependency()));
+    }
+
+    @Override
+    public void complete(@NonNull Collection<GradleDependency> gradleDependencies) {
+        // don't do anything
+        System.out.println("Rendering all now..");
+        gradleDependencies.iterator().forEachRemaining(gradleDependency ->
+                System.out.println(gradleDependency.toString())
+        );
     }
 
     private void render(String formattedDependency) {

@@ -33,7 +33,6 @@ public class MavenComponentDependencyAdapter implements IDependencyComponentAdap
                 dependency.getVersion()
         );
 
-        final MavenComponent mavenComponent = new MavenComponent(mavenComponentInfo);
-        return mavenComponent;
+        return new MavenComponent(mavenComponentInfo);
     }
 }

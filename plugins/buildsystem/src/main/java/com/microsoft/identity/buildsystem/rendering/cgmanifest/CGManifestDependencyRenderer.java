@@ -37,6 +37,11 @@ import org.gradle.api.Project;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import lombok.NonNull;
 
@@ -44,13 +49,13 @@ public class CGManifestDependencyRenderer extends AbstractDependencyRenderer {
 
     private static final String CG_MANIFEST_FILE_NAME = "cgmanifest.json";
 
-    final CgManifest mCgManifest = new CgManifest();
-
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static final JsonParser JSON_PARSER = new JsonParser();
 
     private final IDependencyComponentAdapter<MavenComponent> mDependencyComponentAdapter =
             new MavenComponentDependencyAdapter();
+
+    private final Map<IMavenDependency, DependencyType> mRegisteredMavenDependencies = new HashMap<>();
 
     public CGManifestDependencyRenderer(DependencyRendererSettings dependencyRendererSettings) {
         super(dependencyRendererSettings);
@@ -58,23 +63,50 @@ public class CGManifestDependencyRenderer extends AbstractDependencyRenderer {
 
     @Override
     public void render(@NonNull GradleDependency gradleDependency) {
-        final MavenComponent mavenComponent = mDependencyComponentAdapter.adapt(
-                gradleDependency.getMavenDependency()
-        );
-        mCgManifest.addRegistration(new Registration(
-                mavenComponent,
-                gradleDependency.getDependencyType() == DependencyType.DEVELOPMENT
-        ));
+        // we could do something here...but let's just take the final result from the complete
+        // method
+    }
+
+    @Override
+    public void complete(@NonNull Collection<GradleDependency> gradleDependencies) {
+        final CgManifest cgManifest = createCgManifest(gradleDependencies);
+
+        final String cgManifestJson = GSON.toJson(cgManifest);
+        final JsonElement cgManifestJsonElement = JSON_PARSER.parse(cgManifestJson);
+        final String cgManifestPrettyJson = GSON.toJson(cgManifestJsonElement);
+        System.out.println(cgManifestPrettyJson);
+        dumpToCgManifestJsonFile(cgManifestPrettyJson);
     }
 
     @Override
     public void completeProject(Project project) {
         super.completeProject(project);
-        final String cgManifestJson = GSON.toJson(mCgManifest);
-        final JsonElement cgManifestJsonElement = JSON_PARSER.parse(cgManifestJson);
-        final String cgManifestPrettyJson = GSON.toJson(cgManifestJsonElement);
-        System.out.println(cgManifestPrettyJson);
-        dumpToCgManifestJsonFile(cgManifestPrettyJson);
+    }
+
+    private CgManifest createCgManifest(@NonNull final Collection<GradleDependency> gradleDependencies) {
+        final CgManifest cgManifest = new CgManifest();
+
+        for (final GradleDependency gradleDependency : gradleDependencies) {
+            final IMavenDependency mavenDependency = gradleDependency.getMavenDependency();
+            final DependencyType dependencyType = gradleDependency.getDependencyType();
+            final Set<IMavenDependency> rootDeps = gradleDependency.getDependencyRoots();
+
+            final MavenComponent mavenComponent = mDependencyComponentAdapter.adapt(
+                    mavenDependency
+            );
+
+            final Set<Component> rootComponents = new HashSet<>();
+
+            rootDeps.iterator().forEachRemaining(mavenDep -> rootComponents.add(mDependencyComponentAdapter.adapt(mavenDep)));
+
+            cgManifest.addRegistration(new Registration(
+                    mavenComponent,
+                    dependencyType == DependencyType.DEVELOPMENT,
+                    rootComponents
+            ));
+        }
+
+        return cgManifest;
     }
 
     private void dumpToCgManifestJsonFile(final String text) {

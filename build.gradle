@@ -1,5 +1,38 @@
+if (System.getenv("ENV_VSTS_MVN_ANDROID_MSAL_USERNAME") != null) {
+    println "Using vsts maven username from environment variable: " + System.getenv("ENV_VSTS_MVN_ANDROID_MSAL_USERNAME")
+} else if (project.findProperty("vstsUsername") != null) {
+    println "Using vsts maven username from gradle properties: " + project.findProperty("vstsUsername") 
+} else {
+    println "No vsts maven user name defined"
+}
+if (System.getenv("ENV_VSTS_MVN_ANDROID_ANDROIDACCOUNTS_ACCESSTOKEN") != null) {
+    println "Using vsts maven access token from environment variable"
+} else if (project.findProperty("vstsMavenAccessToken") != null) {
+    println "Using vsts maven access token from gradle properties"
+} else {
+    println "No vsts maven access token defined"
+}
+if (System.getenv("ENV_VSTS_GRADLE_ANDROID_ANDROIDACCOUNTS_ACCESSTOKEN") != null) {
+    println "Using vsts maven access token from environment variable"
+} else if (project.findProperty("vstsAriaGradleAccessToken") != null) {
+    println "Using vsts aria gradle access token from gradle properties"
+} else {
+    println "No vsts aria gradle access token defined"
+}
+if (System.getenv("AZURE_ARTIFACTS_ENV_ACCESSTOKEN") != null) {
+    println "Using azure artifacts access token from environment variable"
+} else if (project.findProperty("azureArtifactsGradleAccessToken") != null) {
+    println "Using azure artifacts access token from gradle properties"
+} else {
+    println "No azure artifacts access token defined"
+}
+
 project.ext.vstsUsername = System.getenv("ENV_VSTS_MVN_ANDROID_MSAL_USERNAME") != null ? System.getenv("ENV_VSTS_MVN_ANDROID_MSAL_USERNAME") : project.findProperty("vstsUsername")
 project.ext.vstsMavenAccessToken = System.getenv("ENV_VSTS_MVN_ANDROIDADACCOUNTS_ACCESSTOKEN") != null ? System.getenv("ENV_VSTS_MVN_ANDROIDADACCOUNTS_ACCESSTOKEN") : project.findProperty("vstsMavenAccessToken")
+project.ext.ariaGradleAccessToken = System.getenv("ENV_VSTS_GRADLE_ANDROIDADACCOUNTS_ACCESSTOKEN") != null ? System.getenv("ENV_VSTS_GRADLE_ANDROIDADACCOUNTS_ACCESSTOKEN") : project.findProperty("vstsAriaGradleAccessToken")
+project.ext.msazureGradleAccessToken = System.getenv("AZURE_ARTIFACTS_ENV_ACCESS_TOKEN") != null ? System.getenv("AZURE_ARTIFACTS_ENV_ACCESS_TOKEN") : project.findProperty("azureArtifactsGradleAccessToken")
+
+
 buildscript {
     apply from: rootProject.file("gradle/versions.gradle")
 

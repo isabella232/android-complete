@@ -60,7 +60,8 @@ public abstract class AbstractDependencyRenderer extends TextReportRenderer impl
 
     public abstract void render(@NonNull final GradleDependency gradleDependency);
 
-    public abstract void complete(@NonNull final Collection<GradleDependency> gradleDependencies);
+    public abstract void complete(@NonNull final Project project,
+                                  @NonNull final Collection<GradleDependency> gradleDependencies);
 
     private final Map<String, GradleDependency> mRenderedDepMap = new HashMap<>();
 
@@ -72,7 +73,7 @@ public abstract class AbstractDependencyRenderer extends TextReportRenderer impl
 
     @Override
     public void completeProject(Project project) {
-        complete(mRenderedDepMap.values());
+        complete(project, mRenderedDepMap.values());
     }
 
 

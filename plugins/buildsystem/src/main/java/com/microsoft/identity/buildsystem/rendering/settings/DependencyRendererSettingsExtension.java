@@ -24,8 +24,13 @@ package com.microsoft.identity.buildsystem.rendering.settings;
 
 import org.gradle.api.provider.Property;
 
+import java.io.File;
+
 public abstract class DependencyRendererSettingsExtension {
 
     abstract public Property<Boolean> getRenderProjectDependency();
 
+    abstract public Property<Boolean> getRenderTransitiveDependencies();
+
+    abstract public Property<File> getCgManifestReportDirectory();
 }

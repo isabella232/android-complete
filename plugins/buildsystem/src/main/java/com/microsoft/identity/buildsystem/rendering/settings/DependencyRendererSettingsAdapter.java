@@ -22,9 +22,18 @@
 //  THE SOFTWARE.
 package com.microsoft.identity.buildsystem.rendering.settings;
 
+import org.gradle.api.Project;
 import org.gradle.api.provider.Property;
 
+import java.io.File;
+
+import lombok.AllArgsConstructor;
+
+@AllArgsConstructor
 public class DependencyRendererSettingsAdapter implements IDependencyRendererSettingsAdapter {
+
+    private final Project mProject;
+
     @Override
     public DependencyRendererSettings adapt(DependencyRendererSettingsExtension extension) {
         final DependencyRendererSettings.DependencyRendererSettingsBuilder builder =
@@ -34,9 +43,21 @@ public class DependencyRendererSettingsAdapter implements IDependencyRendererSet
             return builder.build();
         }
 
-        Property<Boolean> renderProjectDependency = extension.getRenderProjectDependency();
+        final Property<Boolean> renderProjectDependency = extension.getRenderProjectDependency();
         if (renderProjectDependency != null && renderProjectDependency.isPresent()) {
             builder.renderProjectDependency(renderProjectDependency.get());
+        }
+
+        final Property<Boolean> renderTransitiveDependencies = extension.getRenderTransitiveDependencies();
+        if (renderTransitiveDependencies != null && renderTransitiveDependencies.isPresent()) {
+            builder.renderTransitiveDependencies(renderTransitiveDependencies.get());
+        }
+
+        final Property<File> cgManifestReportDirectory = extension.getCgManifestReportDirectory();
+        if (cgManifestReportDirectory != null && cgManifestReportDirectory.isPresent()) {
+            builder.cgManifestReportDirectory(cgManifestReportDirectory.get());
+        } else {
+            builder.cgManifestReportDirectory(mProject.getBuildDir());
         }
 
         return builder.build();

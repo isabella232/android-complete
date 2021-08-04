@@ -34,6 +34,7 @@ import com.microsoft.identity.buildsystem.rendering.settings.DependencyRendererS
 
 import org.gradle.api.Project;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -55,8 +56,6 @@ public class CGManifestDependencyRenderer extends AbstractDependencyRenderer {
     private final IDependencyComponentAdapter<MavenComponent> mDependencyComponentAdapter =
             new MavenComponentDependencyAdapter();
 
-    private final Map<IMavenDependency, DependencyType> mRegisteredMavenDependencies = new HashMap<>();
-
     public CGManifestDependencyRenderer(DependencyRendererSettings dependencyRendererSettings) {
         super(dependencyRendererSettings);
     }
@@ -68,14 +67,15 @@ public class CGManifestDependencyRenderer extends AbstractDependencyRenderer {
     }
 
     @Override
-    public void complete(@NonNull Collection<GradleDependency> gradleDependencies) {
+    public void complete(@NonNull final Project project,
+                         @NonNull Collection<GradleDependency> gradleDependencies) {
         final CgManifest cgManifest = createCgManifest(gradleDependencies);
 
         final String cgManifestJson = GSON.toJson(cgManifest);
         final JsonElement cgManifestJsonElement = JSON_PARSER.parse(cgManifestJson);
         final String cgManifestPrettyJson = GSON.toJson(cgManifestJsonElement);
         System.out.println(cgManifestPrettyJson);
-        dumpToCgManifestJsonFile(cgManifestPrettyJson);
+        dumpToCgManifestJsonFile(project.getBuildDir(), cgManifestPrettyJson);
     }
 
     @Override
@@ -109,9 +109,11 @@ public class CGManifestDependencyRenderer extends AbstractDependencyRenderer {
         return cgManifest;
     }
 
-    private void dumpToCgManifestJsonFile(final String text) {
+    private void dumpToCgManifestJsonFile(@NonNull final File rootDir, @NonNull final String text) {
         try {
-            final FileWriter fileWriter = new FileWriter(CG_MANIFEST_FILE_NAME);
+            final File cgManifestFile = new File(rootDir, CG_MANIFEST_FILE_NAME);
+            System.out.println("Writing cg manifest to file: " + cgManifestFile.getAbsolutePath());
+            final FileWriter fileWriter = new FileWriter(cgManifestFile);
             PrintWriter printWriter = new PrintWriter(fileWriter);
             printWriter.print(text);
             printWriter.close();

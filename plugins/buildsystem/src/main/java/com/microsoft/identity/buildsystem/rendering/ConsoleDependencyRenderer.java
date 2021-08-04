@@ -24,6 +24,8 @@ package com.microsoft.identity.buildsystem.rendering;
 
 import com.microsoft.identity.buildsystem.rendering.settings.DependencyRendererSettings;
 
+import org.gradle.api.Project;
+
 import java.util.Collection;
 
 import lombok.NonNull;
@@ -44,7 +46,8 @@ public class ConsoleDependencyRenderer extends AbstractDependencyRenderer {
     }
 
     @Override
-    public void complete(@NonNull Collection<GradleDependency> gradleDependencies) {
+    public void complete(@NonNull final Project project,
+                         @NonNull Collection<GradleDependency> gradleDependencies) {
         // don't do anything
         System.out.println("Rendering all now..");
         gradleDependencies.iterator().forEachRemaining(gradleDependency ->

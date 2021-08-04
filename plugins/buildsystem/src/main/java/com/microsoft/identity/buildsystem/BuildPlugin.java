@@ -45,9 +45,6 @@ public class BuildPlugin implements Plugin<Project> {
     private final static String JAVA_SOURCE_COMPATIBILITY_PROPERTY = "sourceCompatibility";
     private final static String JAVA_TARGET_COMPATIBILITY_PROPERTY = "targetCompatibility";
 
-    private final IDependencyRendererSettingsAdapter mDependencyRendererSettingsAdapter =
-            new DependencyRendererSettingsAdapter();
-
     @Override
     public void apply(final Project project) {
 
@@ -57,14 +54,17 @@ public class BuildPlugin implements Plugin<Project> {
         final DependencyRendererSettingsExtension dependencyRendererSettingsExtension =
                 project.getExtensions().create("dependencyRendering", DependencyRendererSettingsExtension.class);
 
-        project.afterEvaluate(project1 -> {
+        project.afterEvaluate(evaluatedProject -> {
             if (config.getDesugar().get()) {
-                project1.getLogger().warn("DESUGARING ENABLED");
-                applyDesugaringToAndroidProject(project1);
-                applyJava8ToJavaProject(project1);
+                evaluatedProject.getLogger().warn("DESUGARING ENABLED");
+                applyDesugaringToAndroidProject(evaluatedProject);
+                applyJava8ToJavaProject(evaluatedProject);
             } else {
-                project1.getLogger().warn("DESUGARING DISABLED");
+                evaluatedProject.getLogger().warn("DESUGARING DISABLED");
             }
+
+            final IDependencyRendererSettingsAdapter mDependencyRendererSettingsAdapter =
+                    new DependencyRendererSettingsAdapter(evaluatedProject);
 
             final DependencyRendererSettings dependencyRendererSettings =
                     mDependencyRendererSettingsAdapter.adapt(dependencyRendererSettingsExtension);

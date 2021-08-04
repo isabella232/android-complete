@@ -22,6 +22,8 @@
 //  THE SOFTWARE.
 package com.microsoft.identity.buildsystem.rendering.settings;
 
+import java.io.File;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.experimental.Accessors;
@@ -30,9 +32,12 @@ import lombok.experimental.Accessors;
 @Getter
 @Accessors(prefix = "m")
 public class DependencyRendererSettings {
+
     @Builder.Default
     private final boolean mRenderProjectDependency = false;
 
     @Builder.Default
     private final boolean mRenderTransitiveDependencies = true;
+
+    private final File mCgManifestReportDirectory;
 }

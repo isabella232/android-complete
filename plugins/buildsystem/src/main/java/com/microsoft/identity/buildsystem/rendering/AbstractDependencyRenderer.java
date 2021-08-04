@@ -52,7 +52,7 @@ import lombok.experimental.Accessors;
 @Accessors(prefix = "m")
 public abstract class AbstractDependencyRenderer extends TextReportRenderer implements DependencyReportRenderer {
 
-    private final DependencyRendererSettings mDependencyRendererSettings;
+    protected final DependencyRendererSettings mDependencyRendererSettings;
 
     private static final IMavenDependencyAdapter sMavenDependencyAdapter = new MavenDependencyAdapter();
 

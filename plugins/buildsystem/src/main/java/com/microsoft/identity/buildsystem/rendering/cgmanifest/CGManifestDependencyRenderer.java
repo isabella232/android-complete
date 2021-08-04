@@ -39,9 +39,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import lombok.NonNull;
@@ -75,7 +73,9 @@ public class CGManifestDependencyRenderer extends AbstractDependencyRenderer {
         final JsonElement cgManifestJsonElement = JSON_PARSER.parse(cgManifestJson);
         final String cgManifestPrettyJson = GSON.toJson(cgManifestJsonElement);
         System.out.println(cgManifestPrettyJson);
-        dumpToCgManifestJsonFile(project.getBuildDir(), cgManifestPrettyJson);
+        dumpToCgManifestJsonFile(
+                mDependencyRendererSettings.getCgManifestReportDirectory(), cgManifestPrettyJson
+        );
     }
 
     @Override

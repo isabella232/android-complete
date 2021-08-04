@@ -26,6 +26,7 @@ import java.io.File;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.experimental.Accessors;
 
 @Builder
@@ -39,5 +40,6 @@ public class DependencyRendererSettings {
     @Builder.Default
     private final boolean mRenderTransitiveDependencies = true;
 
+    @NonNull
     private final File mCgManifestReportDirectory;
 }

@@ -22,14 +22,37 @@
 //  THE SOFTWARE.
 package com.microsoft.identity.buildsystem.rendering;
 
-public class SimpleDependencyFormatter implements IDependencyFormatter {
+import org.gradle.api.artifacts.Configuration;
 
-    private static final String SEPARATOR = ":";
+import lombok.NonNull;
 
+/**
+ * An implementation of the {@link IDependencyTypeAdapter}.
+ */
+public class DependencyTypeAdapter implements IDependencyTypeAdapter {
     @Override
-    public String formatDependency(IMavenDependency dependency) {
-        return dependency.getGroup()
-                + SEPARATOR + dependency.getName()
-                + SEPARATOR + dependency.getVersion();
+    public DependencyType adapt(Configuration configuration) {
+        if (isRuntimeConfiguration(configuration.getName())) {
+            return DependencyType.RUNTIME;
+        } else {
+            return DependencyType.DEVELOPMENT;
+        }
+    }
+
+    /**
+     * Determines if the supplied {@link Configuration} translates to dependencies appearing on the
+     * runtime classpath or not.
+     *
+     * @param configurationName the name of the configuration to render
+     * @return a boolean that indicates if the configuration is runtime or not
+     */
+    private boolean isRuntimeConfiguration(@NonNull final String configurationName) {
+        switch (configurationName) {
+            case "runtimeClasspath":
+            case "implementation":
+                return true;
+            default:
+                return false;
+        }
     }
 }

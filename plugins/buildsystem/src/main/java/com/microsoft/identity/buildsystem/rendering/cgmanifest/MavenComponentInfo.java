@@ -28,10 +28,15 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 
+/**
+ * Provides information about a {@link MavenComponent}.
+ * <p>
+ * For more information, read the docs here: https://docs.opensource.microsoft.com/tools/cg/features/cgmanifest/
+ */
 @Getter
 @AllArgsConstructor
 @Accessors(prefix = "m")
-public class MavenComponentInfo implements IMavenComponentInfo {
+public class MavenComponentInfo {
 
     @SerializedName(SerializedNames.GROUP_ID)
     private final String mGroupId;

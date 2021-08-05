@@ -27,13 +27,16 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 
+/**
+ * An implementation of {@link IMavenDependency}.
+ */
 @AllArgsConstructor
 @Getter
 @Accessors(prefix = "m")
 @EqualsAndHashCode
 public class MavenDependency implements IMavenDependency {
 
-    private static final IDependencyFormatter sDependencyFormatter = new SimpleDependencyFormatter();
+    private static final IMavenDependencyFormatter sDependencyFormatter = new SimpleMavenDependencyFormatter();
 
     private final String mGroup;
     private final String mName;

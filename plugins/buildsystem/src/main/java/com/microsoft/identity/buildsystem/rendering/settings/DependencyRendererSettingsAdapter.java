@@ -27,17 +27,22 @@ import org.gradle.api.provider.Property;
 
 import java.io.File;
 
+import javax.annotation.Nullable;
+
 import lombok.AllArgsConstructor;
 
+/**
+ * An implementation of the {@link IDependencyRendererSettingsAdapter}.
+ */
 @AllArgsConstructor
 public class DependencyRendererSettingsAdapter implements IDependencyRendererSettingsAdapter {
 
     private final Project mProject;
 
     @Override
-    public DependencyRendererSettings adapt(DependencyRendererSettingsExtension extension) {
-        final DependencyRendererSettings.DependencyRendererSettingsBuilder builder =
-                DependencyRendererSettings.builder();
+    public GradleDependencyRendererSettings adapt(@Nullable final DependencyRendererSettingsExtension extension) {
+        final GradleDependencyRendererSettings.GradleDependencyRendererSettingsBuilder builder =
+                GradleDependencyRendererSettings.builder();
 
         if (extension == null) {
             return builder.build();
@@ -57,6 +62,7 @@ public class DependencyRendererSettingsAdapter implements IDependencyRendererSet
         if (cgManifestReportDirectory != null && cgManifestReportDirectory.isPresent()) {
             builder.cgManifestReportDirectory(cgManifestReportDirectory.get());
         } else {
+            // project.getBuildDir is the default if a File location is not project
             builder.cgManifestReportDirectory(mProject.getBuildDir());
         }
 

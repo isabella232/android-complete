@@ -26,11 +26,35 @@ import org.gradle.api.provider.Property;
 
 import java.io.File;
 
+/**
+ * Gradle Build Extension to provide dependency rendering configuration to our
+ * {@link com.microsoft.identity.buildsystem.BuildPlugin}.
+ */
 public abstract class DependencyRendererSettingsExtension {
 
+    /**
+     * Get the property that indicates if project dependencies should be rendered by the build
+     * plugin.
+     *
+     * @return a {@link Property<Boolean>} that indicates if project dependencies should be rendered
+     */
     abstract public Property<Boolean> getRenderProjectDependency();
 
+    /**
+     * Get the property that indicates if transitive dependencies should be rendered by the build
+     * plugin.
+     *
+     * @return a {@link Property<Boolean>} that indicates if transitive dependencies should be
+     * rendered
+     */
     abstract public Property<Boolean> getRenderTransitiveDependencies();
 
+    /**
+     * Get the property that indicates the directory where the
+     * {@link com.microsoft.identity.buildsystem.rendering.cgmanifest.CgManifest} file should be
+     * created.
+     *
+     * @return a {@link Property<File>} that indicates the directory of the cg manifest file
+     */
     abstract public Property<File> getCgManifestReportDirectory();
 }

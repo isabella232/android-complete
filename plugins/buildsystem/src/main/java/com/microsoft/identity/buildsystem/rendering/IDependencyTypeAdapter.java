@@ -24,25 +24,17 @@ package com.microsoft.identity.buildsystem.rendering;
 
 import org.gradle.api.artifacts.Configuration;
 
-import lombok.NonNull;
+/**
+ * An adapter that convert a Gradle dependency {@link Configuration} into a {@link DependencyType}
+ * object.
+ */
+public interface IDependencyTypeAdapter {
 
-public class ConfigurationAdapter implements IConfigurationAdapter {
-    @Override
-    public DependencyType adapt(Configuration configuration) {
-        if (isRuntimeConfiguration(configuration.getName())) {
-            return DependencyType.RUNTIME;
-        } else {
-            return DependencyType.DEVELOPMENT;
-        }
-    }
-
-    private boolean isRuntimeConfiguration(@NonNull final String configurationName) {
-        switch (configurationName) {
-            case "runtimeClasspath":
-            case "implementation":
-                return true;
-            default:
-                return false;
-        }
-    }
+    /**
+     * Convert the supplied the {@link Configuration} into a {@link DependencyType} object.
+     *
+     * @param configuration the {@link Configuration} that needs to be adapted
+     * @return a {@link DependencyType} object
+     */
+    DependencyType adapt(Configuration configuration);
 }

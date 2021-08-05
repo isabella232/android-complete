@@ -26,11 +26,11 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
-import com.microsoft.identity.buildsystem.rendering.AbstractDependencyRenderer;
+import com.microsoft.identity.buildsystem.rendering.AbstractGradleDependencyRenderer;
 import com.microsoft.identity.buildsystem.rendering.DependencyType;
 import com.microsoft.identity.buildsystem.rendering.GradleDependency;
 import com.microsoft.identity.buildsystem.rendering.IMavenDependency;
-import com.microsoft.identity.buildsystem.rendering.settings.DependencyRendererSettings;
+import com.microsoft.identity.buildsystem.rendering.settings.GradleDependencyRendererSettings;
 
 import org.gradle.api.Project;
 
@@ -44,18 +44,24 @@ import java.util.Set;
 
 import lombok.NonNull;
 
-public class CGManifestDependencyRenderer extends AbstractDependencyRenderer {
+/**
+ * An implementation of {@link AbstractGradleDependencyRenderer} to render dependencies in a
+ * {@link CgManifest} format and also write them to the cgmanifest.json file.
+ * <p>
+ * The renderer will create the CG Manifest file in the location provided to the
+ * {@link GradleDependencyRendererSettings} object.
+ */
+public class CGManifestGradleDependencyRenderer extends AbstractGradleDependencyRenderer {
 
     private static final String CG_MANIFEST_FILE_NAME = "cgmanifest.json";
 
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static final JsonParser JSON_PARSER = new JsonParser();
 
-    private final IDependencyComponentAdapter<MavenComponent> mDependencyComponentAdapter =
-            new MavenComponentDependencyAdapter();
+    private final IComponentAdapter mDependencyComponentAdapter = new ComponentAdapter();
 
-    public CGManifestDependencyRenderer(DependencyRendererSettings dependencyRendererSettings) {
-        super(dependencyRendererSettings);
+    public CGManifestGradleDependencyRenderer(GradleDependencyRendererSettings gradleDependencyRendererSettings) {
+        super(gradleDependencyRendererSettings);
     }
 
     @Override
@@ -67,14 +73,24 @@ public class CGManifestDependencyRenderer extends AbstractDependencyRenderer {
     @Override
     public void complete(@NonNull final Project project,
                          @NonNull Collection<GradleDependency> gradleDependencies) {
+        // create CG Manifest object from these dependencies
         final CgManifest cgManifest = createCgManifest(gradleDependencies);
 
+        // convert it to JSON representation
         final String cgManifestJson = GSON.toJson(cgManifest);
+
+        // let's get a pretty representation of it
         final JsonElement cgManifestJsonElement = JSON_PARSER.parse(cgManifestJson);
+
+        // and now convert to JSON again so that the string is in the pretty format
         final String cgManifestPrettyJson = GSON.toJson(cgManifestJsonElement);
+
+        // log the JSON to console
         System.out.println(cgManifestPrettyJson);
+
+        // and also dump it into the cgmanifest file i.e. cgmanifest.json
         dumpToCgManifestJsonFile(
-                mDependencyRendererSettings.getCgManifestReportDirectory(), cgManifestPrettyJson
+                mGradleDependencyRendererSettings.getCgManifestReportDirectory(), cgManifestPrettyJson
         );
     }
 
@@ -86,19 +102,30 @@ public class CGManifestDependencyRenderer extends AbstractDependencyRenderer {
     private CgManifest createCgManifest(@NonNull final Collection<GradleDependency> gradleDependencies) {
         final CgManifest cgManifest = new CgManifest();
 
+        // iterate over all the gradle dependencies that we have received
         for (final GradleDependency gradleDependency : gradleDependencies) {
             final IMavenDependency mavenDependency = gradleDependency.getMavenDependency();
             final DependencyType dependencyType = gradleDependency.getDependencyType();
             final Set<IMavenDependency> rootDeps = gradleDependency.getDependencyRoots();
 
+            // take the maven dependency that we got and convert that into a MavenComponent
+            // MavenComponent is type that we need for the CG Manifest
             final MavenComponent mavenComponent = mDependencyComponentAdapter.adapt(
                     mavenDependency
             );
 
             final Set<Component> rootComponents = new HashSet<>();
 
+            // for each root dependency of the dependency we received..we would also convert these
+            // to a CG Manifest Maven Component and add it as the root components
             rootDeps.iterator().forEachRemaining(mavenDep -> rootComponents.add(mDependencyComponentAdapter.adapt(mavenDep)));
 
+            // Create a Registration object out of the data we have for this dependency and add it
+            // to the CG Manifest. Each Dependency object essentially translates to a Registration
+            // object in the CG Manifest.
+            //
+            // Just look at the Registration.java class to understand what all is in there
+            // or just read the docs here: https://docs.opensource.microsoft.com/tools/cg/features/cgmanifest/
             cgManifest.addRegistration(new Registration(
                     mavenComponent,
                     dependencyType == DependencyType.DEVELOPMENT,

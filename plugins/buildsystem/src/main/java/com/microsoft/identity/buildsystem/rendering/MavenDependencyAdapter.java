@@ -27,8 +27,13 @@ import org.gradle.api.artifacts.ModuleVersionIdentifier;
 import org.gradle.api.artifacts.result.DependencyResult;
 import org.gradle.api.artifacts.result.ResolvedDependencyResult;
 
+import javax.annotation.Nullable;
+
 import lombok.NonNull;
 
+/**
+ * An implementation of the {@link IMavenDependencyAdapter}.
+ */
 public class MavenDependencyAdapter implements IMavenDependencyAdapter {
     @Override
     public IMavenDependency adapt(@NonNull final Dependency dependency) {
@@ -39,8 +44,9 @@ public class MavenDependencyAdapter implements IMavenDependencyAdapter {
         return new MavenDependency(group, name, version);
     }
 
+    @Nullable
     @Override
-    public IMavenDependency adapt(DependencyResult dependencyResult) {
+    public IMavenDependency adapt(@NonNull final DependencyResult dependencyResult) {
         if (dependencyResult instanceof ResolvedDependencyResult) {
             return adapt((ResolvedDependencyResult) dependencyResult);
         } else {
@@ -58,7 +64,8 @@ public class MavenDependencyAdapter implements IMavenDependencyAdapter {
     }
 
     private IMavenDependency adapt(ResolvedDependencyResult resolvedDependencyResult) {
-        final ModuleVersionIdentifier selectedModuleVersion = resolvedDependencyResult.getSelected().getModuleVersion();
+        final ModuleVersionIdentifier selectedModuleVersion =
+                resolvedDependencyResult.getSelected().getModuleVersion();
 
         if (selectedModuleVersion == null) {
             return null;

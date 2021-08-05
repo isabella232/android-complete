@@ -26,11 +26,33 @@ import org.gradle.api.artifacts.Dependency;
 import org.gradle.api.artifacts.ModuleVersionIdentifier;
 import org.gradle.api.artifacts.result.DependencyResult;
 
+/**
+ * An adapter to convert different types of internal Gradle dependency objects into a customized
+ * {@link IMavenDependency} type.
+ */
 public interface IMavenDependencyAdapter {
 
+    /**
+     * Convert a {@link Dependency} into a {@link IMavenDependency}.
+     *
+     * @param dependency the {@link Dependency} to convert
+     * @return an {@link IMavenDependency} representation of the provided dep
+     */
     IMavenDependency adapt(Dependency dependency);
 
+    /**
+     * Convert a {@link DependencyResult} into a {@link IMavenDependency}.
+     *
+     * @param dependencyResult the {@link DependencyResult} to convert
+     * @return an {@link IMavenDependency} representation of the provided dep
+     */
     IMavenDependency adapt(DependencyResult dependencyResult);
 
+    /**
+     * Convert a {@link ModuleVersionIdentifier} into a {@link IMavenDependency}.
+     *
+     * @param moduleVersionIdentifier the {@link ModuleVersionIdentifier} to convert
+     * @return an {@link IMavenDependency} representation of the provided dep
+     */
     IMavenDependency adapt(ModuleVersionIdentifier moduleVersionIdentifier);
 }

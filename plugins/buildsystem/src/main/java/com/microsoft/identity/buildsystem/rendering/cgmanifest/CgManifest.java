@@ -30,6 +30,11 @@ import java.util.Set;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 
+/**
+ * Describes a CG Manifest that is used to report dependencies to Microsoft Component Governance.
+ * <p>
+ * More information is located here: https://docs.opensource.microsoft.com/tools/cg/features/cgmanifest/
+ */
 @EqualsAndHashCode
 public class CgManifest {
 

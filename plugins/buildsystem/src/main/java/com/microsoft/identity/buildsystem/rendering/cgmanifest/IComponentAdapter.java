@@ -20,26 +20,21 @@
 //  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
-package com.microsoft.identity.buildsystem.rendering.settings;
+package com.microsoft.identity.buildsystem.rendering.cgmanifest;
 
-import java.io.File;
+import com.microsoft.identity.buildsystem.rendering.IMavenDependency;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.experimental.Accessors;
+/**
+ * Converts an internal dependency into a {@link Component}.
+ */
+public interface IComponentAdapter {
 
-@Builder
-@Getter
-@Accessors(prefix = "m")
-public class DependencyRendererSettings {
-
-    @Builder.Default
-    private final boolean mRenderProjectDependency = false;
-
-    @Builder.Default
-    private final boolean mRenderTransitiveDependencies = true;
-
-    @NonNull
-    private final File mCgManifestReportDirectory;
+    /**
+     * Converts a {@link IMavenDependency} into a {@link MavenComponent}.
+     *
+     * @param dependency the {@link IMavenDependency} dependency that needs to be converted to a
+     *                   component
+     * @return a {@link MavenComponent} representation of the {@link IMavenDependency}
+     */
+    MavenComponent adapt(IMavenDependency dependency);
 }

@@ -22,9 +22,21 @@
 //  THE SOFTWARE.
 package com.microsoft.identity.buildsystem.rendering.settings;
 
+/**
+ * Describes an adapter that can convert a {@link DependencyRendererSettingsExtension} into a
+ * {@link GradleDependencyRendererSettings} object.
+ */
 public interface IDependencyRendererSettingsAdapter {
 
-    DependencyRendererSettings adapt(
+    /**
+     * Converts the provided {@link DependencyRendererSettingsExtension} object into the internal
+     * {@link GradleDependencyRendererSettings} object.
+     *
+     * @param dependencyRendererSettingsExtension the {@link DependencyRendererSettingsExtension}
+     *                                            object that needs to be converted
+     * @return a {@link GradleDependencyRendererSettings} object derived from the supplied extension
+     */
+    GradleDependencyRendererSettings adapt(
             DependencyRendererSettingsExtension dependencyRendererSettingsExtension
     );
 

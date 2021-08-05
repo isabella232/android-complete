@@ -22,40 +22,20 @@
 //  THE SOFTWARE.
 package com.microsoft.identity.buildsystem.rendering;
 
-import com.microsoft.identity.buildsystem.rendering.settings.DependencyRendererSettings;
+/**
+ * An implementation of {@link IMavenDependencyFormatter} that formats the dependency into a simple
+ * string as follows:
+ *
+ * <group>:<artifactId>:<version>
+ */
+public class SimpleMavenDependencyFormatter implements IMavenDependencyFormatter {
 
-import org.gradle.api.Project;
-
-import java.util.Collection;
-
-import lombok.NonNull;
-
-public class ConsoleDependencyRenderer extends AbstractDependencyRenderer {
-
-    private final IDependencyFormatter mDependencyFormatter;
-
-    public ConsoleDependencyRenderer(@NonNull final DependencyRendererSettings dependencyRendererSettings,
-                                     @NonNull final IDependencyFormatter dependencyFormatter) {
-        super(dependencyRendererSettings);
-        mDependencyFormatter = dependencyFormatter;
-    }
+    private static final String SEPARATOR = ":";
 
     @Override
-    public void render(@NonNull GradleDependency gradleDependency) {
-        render(mDependencyFormatter.formatDependency(gradleDependency.getMavenDependency()));
-    }
-
-    @Override
-    public void complete(@NonNull final Project project,
-                         @NonNull Collection<GradleDependency> gradleDependencies) {
-        // don't do anything
-        System.out.println("Rendering all now..");
-        gradleDependencies.iterator().forEachRemaining(gradleDependency ->
-                System.out.println(gradleDependency.toString())
-        );
-    }
-
-    private void render(String formattedDependency) {
-        System.out.println(formattedDependency);
+    public String formatDependency(IMavenDependency dependency) {
+        return dependency.getGroup()
+                + SEPARATOR + dependency.getName()
+                + SEPARATOR + dependency.getVersion();
     }
 }

@@ -23,13 +23,13 @@
 package com.microsoft.identity.buildsystem;
 
 import com.android.build.gradle.LibraryExtension;
-import com.microsoft.identity.buildsystem.rendering.ConsoleDependencyRenderer;
-import com.microsoft.identity.buildsystem.rendering.IDependencyFormatter;
-import com.microsoft.identity.buildsystem.rendering.SimpleDependencyFormatter;
-import com.microsoft.identity.buildsystem.rendering.cgmanifest.CGManifestDependencyRenderer;
-import com.microsoft.identity.buildsystem.rendering.settings.DependencyRendererSettings;
+import com.microsoft.identity.buildsystem.rendering.ConsoleGradleDependencyRenderer;
+import com.microsoft.identity.buildsystem.rendering.IMavenDependencyFormatter;
+import com.microsoft.identity.buildsystem.rendering.SimpleMavenDependencyFormatter;
+import com.microsoft.identity.buildsystem.rendering.cgmanifest.CGManifestGradleDependencyRenderer;
 import com.microsoft.identity.buildsystem.rendering.settings.DependencyRendererSettingsAdapter;
 import com.microsoft.identity.buildsystem.rendering.settings.DependencyRendererSettingsExtension;
+import com.microsoft.identity.buildsystem.rendering.settings.GradleDependencyRendererSettings;
 import com.microsoft.identity.buildsystem.rendering.settings.IDependencyRendererSettingsAdapter;
 
 import org.gradle.api.JavaVersion;
@@ -66,17 +66,19 @@ public class BuildPlugin implements Plugin<Project> {
             final IDependencyRendererSettingsAdapter mDependencyRendererSettingsAdapter =
                     new DependencyRendererSettingsAdapter(evaluatedProject);
 
-            final DependencyRendererSettings dependencyRendererSettings =
+            final GradleDependencyRendererSettings gradleDependencyRendererSettings =
                     mDependencyRendererSettingsAdapter.adapt(dependencyRendererSettingsExtension);
 
+            // generate gradle task to print dependencies to console
             final DependencyReportTask consoleTask = project.getTasks().create("printDependenciesToConsole", DependencyReportTask.class);
-            final IDependencyFormatter dependencyFormatter = new SimpleDependencyFormatter();
-            consoleTask.setRenderer(new ConsoleDependencyRenderer(
-                    dependencyRendererSettings, dependencyFormatter
+            final IMavenDependencyFormatter dependencyFormatter = new SimpleMavenDependencyFormatter();
+            consoleTask.setRenderer(new ConsoleGradleDependencyRenderer(
+                    gradleDependencyRendererSettings, dependencyFormatter
             ));
 
+            // generate gradle task to create CG Manifest
             final DependencyReportTask cgManifestTask = project.getTasks().create("createDependenciesCgManifest", DependencyReportTask.class);
-            cgManifestTask.setRenderer(new CGManifestDependencyRenderer(dependencyRendererSettings));
+            cgManifestTask.setRenderer(new CGManifestGradleDependencyRenderer(gradleDependencyRendererSettings));
         });
 
         SpotBugs.applySpotBugsPlugin(project);

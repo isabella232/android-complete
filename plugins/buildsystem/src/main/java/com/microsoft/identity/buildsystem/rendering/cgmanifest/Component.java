@@ -27,6 +27,11 @@ import com.google.gson.annotations.SerializedName;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 
+/**
+ * Represents a component in a {@link Registration}.
+ * <p>
+ * For more info read the docs here: https://docs.opensource.microsoft.com/tools/cg/features/cgmanifest/
+ */
 @EqualsAndHashCode
 @AllArgsConstructor
 public abstract class Component {

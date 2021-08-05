@@ -31,6 +31,11 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 
+/**
+ * Represents the Registration of a dependency in the {@link CgManifest}.
+ * <p>
+ * For more information, read the docs here: https://docs.opensource.microsoft.com/tools/cg/features/cgmanifest/
+ */
 @EqualsAndHashCode()
 @AllArgsConstructor
 @Getter

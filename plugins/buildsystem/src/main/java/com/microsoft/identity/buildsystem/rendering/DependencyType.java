@@ -22,6 +22,9 @@
 //  THE SOFTWARE.
 package com.microsoft.identity.buildsystem.rendering;
 
+/**
+ * Determines the type of a dependency i.e. whether it used in development vs production code.
+ */
 public enum DependencyType {
     DEVELOPMENT,
     RUNTIME;

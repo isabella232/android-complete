@@ -30,6 +30,9 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.experimental.Accessors;
 
+/**
+ * Represents a Gradle Dependency.
+ */
 @AllArgsConstructor
 @Getter
 @Accessors(prefix = "m")
@@ -39,10 +42,21 @@ public class GradleDependency {
     private final IMavenDependency mMavenDependency;
     private final Set<IMavenDependency> mDependencyRoots;
 
+    /**
+     * Add a root dependency to this gradle dependency.
+     *
+     * @param mavenDependency the {@link IMavenDependency} that needs to be added as a root this
+     *                        gradle dependency
+     */
     public void addRootDependency(@NonNull final IMavenDependency mavenDependency) {
         mDependencyRoots.add(mavenDependency);
     }
 
+    /**
+     * Set the dependency type of this gradle dependency.
+     *
+     * @param dependencyType the {@link DependencyType}
+     */
     public void setDependencyType(@NonNull final DependencyType dependencyType) {
         mDependencyType = dependencyType;
     }

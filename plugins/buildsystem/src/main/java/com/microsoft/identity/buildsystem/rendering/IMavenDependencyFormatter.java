@@ -20,13 +20,18 @@
 //  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
-package com.microsoft.identity.buildsystem.rendering.cgmanifest;
+package com.microsoft.identity.buildsystem.rendering;
 
-public interface IMavenComponentInfo {
-    String getGroupId();
+/**
+ * An interface to format a dependency into a simple String.
+ */
+public interface IMavenDependencyFormatter {
 
-    String getArtifactId();
-
-    String getVersion();
-
+    /**
+     * Formats a {@link IMavenDependency} into a easily readable String representation.
+     *
+     * @param dependency the dependency to format
+     * @return a String representation of the dependency
+     */
+    String formatDependency(IMavenDependency dependency);
 }

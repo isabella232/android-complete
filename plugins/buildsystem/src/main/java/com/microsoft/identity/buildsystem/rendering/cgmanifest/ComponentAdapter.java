@@ -20,9 +20,26 @@
 //  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
-package com.microsoft.identity.buildsystem.rendering;
+package com.microsoft.identity.buildsystem.rendering.cgmanifest;
 
-public interface IDependencyFormatter {
+import com.microsoft.identity.buildsystem.rendering.IMavenDependency;
 
-    String formatDependency(IMavenDependency dependency);
+import lombok.NonNull;
+
+/**
+ * An implementation of {@link IComponentAdapter} that converts the provided dependency
+ * into a {@link MavenComponent}.
+ */
+public class ComponentAdapter implements IComponentAdapter {
+    @NonNull
+    @Override
+    public MavenComponent adapt(@NonNull final IMavenDependency dependency) {
+        final MavenComponentInfo mavenComponentInfo = new MavenComponentInfo(
+                dependency.getGroup(),
+                dependency.getName(),
+                dependency.getVersion()
+        );
+
+        return new MavenComponent(mavenComponentInfo);
+    }
 }

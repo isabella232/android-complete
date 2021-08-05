@@ -20,11 +20,41 @@
 //  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
-package com.microsoft.identity.buildsystem.rendering;
+package com.microsoft.identity.buildsystem.rendering.settings;
 
-import org.gradle.api.artifacts.Configuration;
+import java.io.File;
 
-public interface IConfigurationAdapter {
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.experimental.Accessors;
 
-    DependencyType adapt(Configuration configuration);
+/**
+ * Represents the settings that control some of the rendering of the dependencies in the
+ * {@link com.microsoft.identity.buildsystem.rendering.AbstractGradleDependencyRenderer}.
+ */
+@Builder
+@Getter
+@Accessors(prefix = "m")
+public class GradleDependencyRendererSettings {
+
+    /**
+     * Indicates whether project dependencies should be rendered.
+     * <p>
+     * These are basically when we do things like "implementation project(":projectName")"
+     */
+    @Builder.Default
+    private final boolean mRenderProjectDependency = false;
+
+    /**
+     * Indicates whether transitive dependencies of a dependency should be rendered.
+     */
+    @Builder.Default
+    private final boolean mRenderTransitiveDependencies = true;
+
+    /**
+     * Indicates the directory on the machine where the CG Manifest should be created.
+     */
+    @NonNull
+    private final File mCgManifestReportDirectory;
 }

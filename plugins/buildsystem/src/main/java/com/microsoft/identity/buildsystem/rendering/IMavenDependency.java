@@ -22,6 +22,9 @@
 //  THE SOFTWARE.
 package com.microsoft.identity.buildsystem.rendering;
 
+/**
+ * Describes a maven dependency.
+ */
 public interface IMavenDependency {
 
     /**

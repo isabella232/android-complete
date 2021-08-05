@@ -29,6 +29,12 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.experimental.Accessors;
 
+/**
+ * Represents a Maven Component i.e. a {@link Component} of the Maven type in a {@link Registration}
+ * in the CG Manifest.
+ * <p>
+ * For more information, read the docs here: https://docs.opensource.microsoft.com/tools/cg/features/cgmanifest/
+ */
 @EqualsAndHashCode(callSuper = true)
 @Getter
 @Accessors(prefix = "m")

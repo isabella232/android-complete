@@ -145,3 +145,4 @@ project(':LabApiUtilities').projectDir = new File('common/LabApiUtilities')
 //include(":RootDetectionLibrary")
 //project(':RootDetectionLibrary').projectDir = new File('authenticator/PhoneFactor/RootDetectionLibrary')
 
+include ':calculatortestapp'

@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">calculatorTestApp</string>
+    <string name="title_text">Calculator API</string>
+    <string name="result_text">Result:</string>
+    <string-array name="calc_ops">
+        <item>+</item>
+        <item>-</item>
+        <item>x</item>
+        <item>/</item>
+    </string-array>
+</resources>

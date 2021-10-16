@@ -78,7 +78,7 @@ steps:
     definition: '$(azuresample_pipeline_id)'
     artifactName: AzureSample
     itemPattern: '**/*.apk'
-    targetPath: '$(Build.StagingDirectory)'
+    targetPath: '$(Build.StagingDirectory)/azuresample'
     buildVersionToDownload: 'latest'
 - script: curl -L -o Authenticator.apk  "${{ parameters.authenticatorLink }}"
   displayName: 'Download Authenticator'
@@ -86,8 +86,14 @@ steps:
 - script:  curl -L -o CompanyPortal.apk "${{ parameters.companyPortalLink }}"
   displayName: 'Download Company Portal'
   workingDirectory: '$(Build.StagingDirectory)'
-- script: ls -R
-  displayName: 'check apks'
+- script: |
+    mv azuresample/*.apk Azuresample.apk
+    rm -r azuresample
+    mv prod/*.apk BrokerHostProd.apk
+    rm -r prod
+    mv rc/*.apk BrokerHostRC.apk
+    rm -r rc
+  displayName: 'Rename APKs'
   workingDirectory: '$(Build.StagingDirectory)'
 - script: gcloud version
   displayName: 'Check gcloud version'

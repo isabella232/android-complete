@@ -2,7 +2,7 @@
 # Start with a minimal pipeline that you can customize to build and deploy your code.
 # Add steps that build, run tests, deploy, and more:
 # https://aka.ms/yaml
-name: $(Build.BuildId)
+name: $(Build.BuildId)_$(Build.DefinitionName)_$(SourceBranchName)_$(Date:yyyyMMdd)$(Rev:.r)
 
 trigger: none
 pr: none
@@ -16,10 +16,18 @@ parameters:
   type: string
 - name: BrokerHostRC
   displayName: BrokerHost RC run ID
-  type: string
+  type: number
 - name: BrokerHostProd
   displayName: BrokerHost prod run ID
-  type: string
+  type: number
+
+resources:
+  repositories:
+  - repository: common
+    type: github
+    name: AzureAD/microsoft-authentication-library-common-for-android
+    ref: dev
+    endpoint: ANDROID_GITHUB
 
 pool:
   vmImage: ubuntu-latest
@@ -33,12 +41,50 @@ steps:
     definition: 1432
     artifactName: BrokerHost
     itemPattern: '**/*.apk'
-    targetPath: '$(System.ArtifactsDirectory)'
+    targetPath: '$(Pipeline.Workspace)'
     runVersion: 'specific'
     runId: ${{ parameters.BrokerHostRC }}
+- task: DownloadPipelineArtifact@2
+  displayName: 'Download Production Broker Host'
+  inputs:
+    buildType: specific
+    project: 'fac9d424-53d2-45c0-91b5-ef6ba7a6bf26'
+    definition: 1432
+    artifactName: BrokerHost
+    itemPattern: '**/*.apk'
+    targetPath: '$(Pipeline.Workspace)'
+    runVersion: 'specific'
+    runId: ${{ parameters.BrokerHostRC }}
+- task: DownloadPipelineArtifact@2
+  inputs:
+    buildType: 'specific'
+    project: 'fac9d424-53d2-45c0-91b5-ef6ba7a6bf26'
+    definition: '1458'
+    artifactName: AzureSample
+    itemPattern: '**/*.apk'
+    targetPath: '$(Pipeline.Workspace)'
+    buildVersionToDownload: 'latest'
 - script: curl -L -o Authenticator.apk  "${{ parameters.authenticatorLink }}"
   displayName: 'Download Authenticator'
 - script:  curl -L -o CompanyPortal.apk "${{ parameters.companyPortalLink }}"
   displayName: 'Download Company Portal'
+- task: DownloadSecureFile@1
+  displayName: 'Download Firebase Service Account Key File'
+  inputs:
+    secureFile: AndroidFirebaseServiceAccountKey.json
+    retryCount: 5
+- task: AzureKeyVault@2
+  inputs:
+    azureSubscription: 'Android Build Support(cde31ea7-d66a-4743-af52-1d2c0940779c)'
+    KeyVaultName: 'ADALTestInfo'
+    SecretsFilter: 'AndroidAutomationRunnerAppSecret'
+    RunAsPreJob: true
+- task: CmdLine@1
+  displayName: 'Set MVN Access Token in Environment'
+  inputs:
+    filename: echo
+    arguments: '##vso[task.setvariable variable=ENV_VSTS_MVN_ANDROIDADACCOUNTS_ACCESSTOKEN]$(mvnAccessToken)'
+
+
 - script: gcloud version
   displayName: 'Check gcloud version'

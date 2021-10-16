@@ -75,7 +75,7 @@ steps:
     retryCount: 5
 - task: AzureKeyVault@2
   inputs:
-    azureSubscription: 'Android Build Support(cde31ea7-d66a-4743-af52-1d2c0940779c)'
+    azureSubscription: 'MSIDLABS_ANDROID_KV'
     KeyVaultName: 'ADALTestInfo'
     SecretsFilter: 'AndroidAutomationRunnerAppSecret'
     RunAsPreJob: true
@@ -88,3 +88,4 @@ steps:
 
 - script: gcloud version
   displayName: 'Check gcloud version'
+

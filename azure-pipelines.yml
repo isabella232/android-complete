@@ -7,6 +7,11 @@ name: $(Build.BuildId)_$(Build.DefinitionName)_$(SourceBranchName)_$(Date:yyyyMM
 trigger: none
 pr: none
 
+variables:
+  engineering_project_id: 'fac9d424-53d2-45c0-91b5-ef6ba7a6bf26'
+  brokerhost_pipeline_id: 1432
+  azuresample_pipeline_id: 1458
+
 parameters:
 - name: companyPortalLink
   displayName: Company Portal RC Link
@@ -47,30 +52,30 @@ steps:
   displayName: 'Download RC Broker Host'
   inputs:
     buildType: specific
-    project: 'fac9d424-53d2-45c0-91b5-ef6ba7a6bf26'
-    definition: 1432
+    project: '$(engineering_project_id)'
+    definition: '$(brokerhost_pipeline_id)'
     artifactName: BrokerHost
     itemPattern: '**/*.apk'
-    targetPath: '$(Build.StagingDirectory)'
+    targetPath: '$(Build.StagingDirectory)/rc'
     runVersion: 'specific'
     runId: ${{ parameters.BrokerHostRC }}
 - task: DownloadPipelineArtifact@2
   displayName: 'Download Production Broker Host'
   inputs:
     buildType: specific
-    project: 'fac9d424-53d2-45c0-91b5-ef6ba7a6bf26'
-    definition: 1432
+    project: '$(engineering_project_id)'
+    definition: '$(brokerhost_pipeline_id)'
     artifactName: BrokerHost
     itemPattern: '**/*.apk'
-    targetPath: '$(Build.StagingDirectory)'
+    targetPath: '$(Build.StagingDirectory)/prod'
     runVersion: 'specific'
     runId: ${{ parameters.BrokerHostRC }}
 - task: DownloadPipelineArtifact@2
   displayName: 'Download latest Azure Sample'
   inputs:
     buildType: 'specific'
-    project: 'fac9d424-53d2-45c0-91b5-ef6ba7a6bf26'
-    definition: '1458'
+    project: '$(engineering_project_id)'
+    definition: '$(azuresample_pipeline_id)'
     artifactName: AzureSample
     itemPattern: '**/*.apk'
     targetPath: '$(Build.StagingDirectory)'
@@ -81,7 +86,7 @@ steps:
 - script:  curl -L -o CompanyPortal.apk "${{ parameters.companyPortalLink }}"
   displayName: 'Download Company Portal'
   workingDirectory: '$(Build.StagingDirectory)'
-- script: ls
+- script: ls -R
   displayName: 'check apks'
   workingDirectory: '$(Build.StagingDirectory)'
 - script: gcloud version

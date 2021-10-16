@@ -9,10 +9,10 @@ pr: none
 
 parameters:
 - name: companyPortalLink
-  displayName: Company Portal Link
+  displayName: Company Portal RC Link
   type: string
 - name: authenticatorLink
-  displayName: Authenticator Link
+  displayName: Authenticator RC Link
   type: string
 - name: BrokerHostRC
   displayName: BrokerHost RC run ID
@@ -21,18 +21,28 @@ parameters:
   displayName: BrokerHost prod run ID
   type: number
 
-resources:
-  repositories:
-  - repository: common
-    type: github
-    name: AzureAD/microsoft-authentication-library-common-for-android
-    ref: dev
-    endpoint: ANDROID_GITHUB
-
 pool:
   vmImage: ubuntu-latest
 
 steps:
+- task: AzureKeyVault@2
+  displayName: 'Get Key vault AndroidAutomationRunnerAppSecret'
+  inputs:
+    azureSubscription: 'MSIDLABS_ANDROID_KV'
+    KeyVaultName: 'ADALTestInfo'
+    SecretsFilter: 'AndroidAutomationRunnerAppSecret'
+    RunAsPreJob: false
+- task: DownloadSecureFile@1
+  displayName: 'Download Firebase Service Account Key File'
+  inputs:
+    secureFile: AndroidFirebaseServiceAccountKey.json
+    retryCount: 5
+- task: CmdLine@1
+  displayName: 'Set MVN Access Token in Environment'
+  inputs:
+    filename: echo
+    arguments: '##vso[task.setvariable variable=ENV_VSTS_MVN_ANDROIDADACCOUNTS_ACCESSTOKEN]$(mvnAccessToken)'
+# Download APKs
 - task: DownloadPipelineArtifact@2
   displayName: 'Download RC Broker Host'
   inputs:
@@ -56,6 +66,7 @@ steps:
     runVersion: 'specific'
     runId: ${{ parameters.BrokerHostRC }}
 - task: DownloadPipelineArtifact@2
+  displayName: 'Download latest Azure Sample'
   inputs:
     buildType: 'specific'
     project: 'fac9d424-53d2-45c0-91b5-ef6ba7a6bf26'
@@ -68,24 +79,8 @@ steps:
   displayName: 'Download Authenticator'
 - script:  curl -L -o CompanyPortal.apk "${{ parameters.companyPortalLink }}"
   displayName: 'Download Company Portal'
-- task: DownloadSecureFile@1
-  displayName: 'Download Firebase Service Account Key File'
-  inputs:
-    secureFile: AndroidFirebaseServiceAccountKey.json
-    retryCount: 5
-- task: AzureKeyVault@2
-  inputs:
-    azureSubscription: 'MSIDLABS_ANDROID_KV'
-    KeyVaultName: 'ADALTestInfo'
-    SecretsFilter: 'AndroidAutomationRunnerAppSecret'
-    RunAsPreJob: true
-- task: CmdLine@1
-  displayName: 'Set MVN Access Token in Environment'
-  inputs:
-    filename: echo
-    arguments: '##vso[task.setvariable variable=ENV_VSTS_MVN_ANDROIDADACCOUNTS_ACCESSTOKEN]$(mvnAccessToken)'
-
-
+- script: ls
+  displayName: 'check files'
 - script: gcloud version
   displayName: 'Check gcloud version'
 

@@ -39,6 +39,7 @@ steps:
     RunAsPreJob: false
 - task: DownloadSecureFile@1
   displayName: 'Download Firebase Service Account Key File'
+  name: gcServiceAccountKey
   inputs:
     secureFile: AndroidFirebaseServiceAccountKey.json
     retryCount: 5
@@ -97,4 +98,60 @@ steps:
   workingDirectory: '$(Build.StagingDirectory)'
 - script: gcloud version
   displayName: 'Check gcloud version'
+- task: Gradle@1
+  displayName: 'Assemble MSAL Automation App'
+  inputs:
+    tasks: 'clean msalautomationapp:assembleLocalBrokerHost -PlabSecret=$(AndroidAutomationRunnerAppSecret) -PpreferPreInstalledApks'
+    publishJUnitResults: false
+- task: Gradle@1
+  displayName: 'Assemble MSAL Automation App Instrumented Tests'
+  inputs:
+    tasks: 'msalautomationapp:assembleLocalBrokerHostDebugAndroidTest -PlabSecret=$(AndroidAutomationRunnerAppSecret) -PpreferPreInstalledApks'
+    publishJUnitResults: false
 
+
+# In progress
+- powershell: |
+   $baseApkPath = "$(Build.SourcesDirectory)\msalautomationapp\build\outputs\apk"
+   $appApk = "$baseApkPath\localBrokerHost\debug\msalautomationapp-local-BrokerHost-debug.apk"
+   $testApk = "$baseApkPath\androidTest\localBrokerHost\debug\msalautomationapp-local-BrokerHost-debug-androidTest.apk"
+   $brokerHostApk = "$(System.ArtifactsDirectory)\brokerHost-local-debug.apk"
+   $azureSampleApk = "$(System.ArtifactsDirectory)\AzureSampleLocalDebug\AzureSample-local-debug.apk"
+   $appApk
+   $testApk
+   $brokerHostApk
+   $azureSampleApk
+   gcloud firebase test android run 
+   --type instrumentation 
+   --app $appApk 
+   --test $testApk 
+   --device model=flame,version=29 
+   --timeout 45m 
+   --additional-apks $brokerHostApk,$azureSampleApk 
+   --results-dir msal-BrokerHost-$(Build.BuildId)-$(Build.BuildNumber) 
+   --directories-to-pull "/sdcard" --use-orchestrator 
+   --environment-variables clearPackageData=true 
+   --results-history-name "MSAL dev w/ dev BrokerHost" 
+   --test-targets "notPackage com.microsoft.identity.client.msal.automationapp.testpass.perf"
+  displayName: 'Run UI Automation on Firebase'
+
+
+- task: Bash@3
+  displayName: Run UI Automation on Firebase
+  inputs:
+    targetType: inline
+    script: |
+      gcloud auth activate-service-account --key-file "$(gcServiceAccountKey.secureFilePath)"
+      gcloud config set project $(gCloudProjectId)
+      gcloud firebase test android run \
+        --type instrumentation \
+        --app "$(appApk)" \
+        --test "$(testApk)" \
+        --device "model=$(deviceId),version=$(deviceAndroidVersion)" \
+        --timeout 45m \
+        --other-files "/data/local/tmp/BrokerHost.apk=$(brokerHostApk),/data/local/tmp/MicrosoftOutlook.apk=$(System.ArtifactsDirectory)/$(outlookApk)" \
+        --results-dir "OneAuth-TestApp-$(Build.BuildId)-$(Build.BuildNumber)" \
+        --directories-to-pull "/sdcard" \
+        --use-orchestrator \
+        --environment-variables \
+        clearPackageData=true

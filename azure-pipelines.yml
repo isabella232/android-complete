@@ -28,9 +28,11 @@ steps:
     artifactName: BrokerHost
     itemPattern: '**/*.apk'
     targetPath: '$(System.ArtifactsDirectory)'
-- script: curl ${{ parameters.companyPortalLink }}
+- script: wget ${{ parameters.companyPortalLink }}
   displayName: 'Download authenticatorLink'
-- script: curl ${{ parameters.companyPortalLink }}
+- script: wget ${{ parameters.companyPortalLink }}
   displayName: 'Download Company Portal'
+- script:  ls -lR ./*.apk | wc -l
+  displayName: 'Check files exist'
 - script: gcloud version
   displayName: 'Check gcloud version'

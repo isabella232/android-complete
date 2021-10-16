@@ -51,7 +51,7 @@ steps:
     definition: 1432
     artifactName: BrokerHost
     itemPattern: '**/*.apk'
-    targetPath: '$(Pipeline.Workspace)'
+    targetPath: '$(Build.StagingDirectory)'
     runVersion: 'specific'
     runId: ${{ parameters.BrokerHostRC }}
 - task: DownloadPipelineArtifact@2
@@ -62,7 +62,7 @@ steps:
     definition: 1432
     artifactName: BrokerHost
     itemPattern: '**/*.apk'
-    targetPath: '$(Pipeline.Workspace)'
+    targetPath: '$(Build.StagingDirectory)'
     runVersion: 'specific'
     runId: ${{ parameters.BrokerHostRC }}
 - task: DownloadPipelineArtifact@2
@@ -73,14 +73,17 @@ steps:
     definition: '1458'
     artifactName: AzureSample
     itemPattern: '**/*.apk'
-    targetPath: '$(Pipeline.Workspace)'
+    targetPath: '$(Build.StagingDirectory)'
     buildVersionToDownload: 'latest'
 - script: curl -L -o Authenticator.apk  "${{ parameters.authenticatorLink }}"
   displayName: 'Download Authenticator'
+  workingDirectory: '$(Build.StagingDirectory)'
 - script:  curl -L -o CompanyPortal.apk "${{ parameters.companyPortalLink }}"
   displayName: 'Download Company Portal'
+  workingDirectory: '$(Build.StagingDirectory)'
 - script: ls
-  displayName: 'check files'
+  displayName: 'check apks'
+  workingDirectory: '$(Build.StagingDirectory)'
 - script: gcloud version
   displayName: 'Check gcloud version'
 

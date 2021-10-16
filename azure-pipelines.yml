@@ -13,14 +13,19 @@ parameters:
 - name: authenticatorLink
   displayName: Authenticator Link
   type: string
-
+- name: BrokerHostRC
+  displayName: BrokerHost RC run ID
+  type: string
+- name: BrokerHostProd
+  displayName: BrokerHost prod run ID
+  type: string
 
 pool:
   vmImage: ubuntu-latest
 
 steps:
 - task: DownloadPipelineArtifact@2
-  displayName: 'Download Broker Host'
+  displayName: 'Download RC Broker Host'
   inputs:
     buildType: specific
     project: 'fac9d424-53d2-45c0-91b5-ef6ba7a6bf26'
@@ -28,6 +33,8 @@ steps:
     artifactName: BrokerHost
     itemPattern: '**/*.apk'
     targetPath: '$(System.ArtifactsDirectory)'
+    runVersion: 'specific'
+    runId: ${{ parameters.BrokerHostRC }}
 - script: curl -L -o Authenticator.apk  "${{ parameters.authenticatorLink }}"
   displayName: 'Download Authenticator'
 - script:  curl -L -o CompanyPortal.apk "${{ parameters.companyPortalLink }}"

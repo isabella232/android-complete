@@ -59,6 +59,7 @@ ext {
     dbusJavaUtilsVersion = "3.3.0"
     bouncyCastleVersion = "1.64"
     oshiCoreVersion = "5.7.5"
+    tokenShare = "1.6.1"
 
     // TODO: adal automation test app.
     supportLibraryVersion = "27.1.+"
@@ -82,4 +83,8 @@ ext {
     mockitoLibraryVersion = "1.2"
     dexMakerLibraryVersion = "1.2"
     //#### The ABOVE are TSL version variables - END
+
+    kotlinVersion = '1.5.30'
+    spotBugsGradlePluginVersion = '4.7.1'
+    jupiterApiVersion = '5.6.0'
 }

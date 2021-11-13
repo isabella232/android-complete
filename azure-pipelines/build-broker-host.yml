@@ -62,7 +62,7 @@ jobs:
 - job: brokerhost
   displayName: Build BrokerHost ${{ parameters.productFlavors }} ${{ parameters.signingConfigurations }} APK
   pool:
-    name: Hosted Windows 2019 with VS2019
+    vmImage: 'ubuntu-latest'
   steps:
   - checkout: self
     clean: true
@@ -83,7 +83,7 @@ jobs:
     submodules: true
     path: android-complete/broker
   - ${{ if eq(parameters.productFlavors, 'Dist') }}:
-    - task: PowerShell@2
+    - task: CmdLine@2
       displayName: Generate Assemble Dist Task
       inputs:
         targetType: inline
@@ -101,7 +101,7 @@ jobs:
           if (("$(msal_version)" -ne "")) {
               $assembleTask = $assembleTask + " -PmsalVersion=" + "$(msal_version)"
           }
-          Write-Host "##vso[task.setvariable variable=AssembleTask;]$assembleTask"
+          echo "##vso[task.setvariable variable=AssembleTask;]$assembleTask"
   - ${{ if eq(parameters.productFlavors, 'Local') }}:
     - pwsh: echo "##vso[task.setvariable variable=AssembleTask;]assembleLocal${{ parameters.signingConfigurations }}"
       displayName: Generate Assemble Local Task
@@ -120,7 +120,10 @@ jobs:
       sqAnalysisBreakBuildIfQualityGateFailed: false
       gradleWrapperFile: $(Agent.BuildDirectory)/android-complete/gradlew
       cwd: $(Agent.BuildDirectory)/android-complete
-  - task: PublishPipelineArtifact@1
+  - task: CmdLine@2
+    inputs:
+      script: 'echo Write your commands here.' 
+  - task: adb shell am start -n "com.microsoft.identity.testuserapp/com.microsoft.identity.testuserapp.MainActivity" -a android.intent.action.MAIN -c android.intent.category.LAUNCHER -D
     displayName: Publish Broker Host APK
     inputs:
       targetPath: C:/temp/android_auth/brokerHost/outputs/apk/${{ lower(parameters.productFlavors) }}/${{ lower(parameters.signingConfigurations) }}

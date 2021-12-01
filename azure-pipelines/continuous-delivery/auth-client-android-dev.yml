@@ -42,7 +42,7 @@ resources:
 
 variables:
   versionNumber: $(Build.BuildNumber)
-  gradleParams: -PprojVersion=$(versionNumber) -PdistCommon4jVersion=$(versionNumber) -PdistBroker4jVersion=$(versionNumber) -PdistCommonVersion=$(versionNumber) -PvstsUserName=$(mvnUserName) -PvstsPassword=$(mvnAccessToken) -PvstsMavenAccessToken=$(mvnAccessToken)
+  gradleParams: '-PprojVersion=$(versionNumber) -PdistCommon4jVersion=$(versionNumber) -PdistBroker4jVersion=$(versionNumber) -PdistCommonVersion=$(versionNumber) -PvstsUserName=$(mvnUserName) -PvstsPassword=$(mvnAccessToken) -PvstsMavenAccessToken=$(mvnAccessToken)'
 
 pool:
   vmImage: ubuntu-latest

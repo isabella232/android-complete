@@ -61,6 +61,9 @@ stages:
         clean: true
       - task: Gradle@3
         displayName: Build and publish common4j
+        env:
+          ENV_VSTS_MVN_ANDROIDCOMMON_USERNAME: $(mvnUserName)
+          ENV_VSTS_MVN_ANDROIDCOMMON_ACCESSTOKEN: $(mvnAccessToken)
         inputs:
           tasks: common4j:assemble $(gradleParams) common4j:publishAarPublicationToVsts-maven-adal-androidRepository $(gradleParams)
       - task: Gradle@3

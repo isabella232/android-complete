@@ -122,7 +122,7 @@ stages:
           ENV_VSTS_MVN_ANDROID_MSAL_USERNAME: $(mvnUserName)
           ENV_VSTS_MVN_ANDROID_MSAL_ACCESSTOKEN: $(mvnAccessToken)
         inputs:
-          tasks: msal:assembleDist $(gradleParams) msal:publishMsalPublicationToVsts-maven-adal-androidRepository $(gradleParams)
+          tasks: msal:assembleDistRelease $(gradleParams) msal:publishMsalPublicationToVsts-maven-adal-androidRepository $(gradleParams)
 - stage: 'publishAdal'
   displayName: Adal - Build and publish
   dependsOn: publishCommonLibraries

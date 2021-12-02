@@ -82,7 +82,7 @@ stages:
     - job: publishBrokerLibraries
       displayName: Build and publish broker4j, android broker and linux broker libraries to internal maven feed
       steps:
-        - checkout: self
+        - checkout: broker
           persistCredentials: True
         - task: Gradle@3
           displayName: Build and publish broker4j

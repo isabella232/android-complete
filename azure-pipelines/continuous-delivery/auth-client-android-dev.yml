@@ -136,7 +136,6 @@ stages:
         persistCredentials: True
       - task: Gradle@3
         displayName: Build and publish adal
-        enabled: false
         env:
           ENV_VSTS_MVN_ANDROIDADAL_USERNAME: $(mvnUserName)
           ENV_VSTS_MVN_ANDROIDADAL_ACCESSTOKEN: $(mvnAccessToken)

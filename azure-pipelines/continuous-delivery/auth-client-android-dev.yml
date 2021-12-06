@@ -74,6 +74,14 @@ stages:
         inputs:
           SourceFolder: $(Build.SourcesDirectory)/common4j/build/
           TargetFolder: '$(System.ArtifactsDirectory)/buildOutput'
+      - task: ComponentGovernanceComponentDetection@0
+        inputs:
+          scanType: 'LogOnly'
+          useDefaultDetectors: false
+          detectorsToRun: 'Maven'
+          verbosity: 'Verbose'
+          sourceScanPath: '$(Build.SourcesDirectory)/common4j'
+          alertWarningLevel: 'High'
       - task: ManifestGeneratorTask@0
         displayName: 'Manifest Generation Task'
         inputs:

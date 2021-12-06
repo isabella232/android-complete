@@ -68,7 +68,7 @@ stages:
           ENV_VSTS_MVN_ANDROIDCOMMON_USERNAME: $(mvnUserName)
           ENV_VSTS_MVN_ANDROIDCOMMON_ACCESSTOKEN: $(mvnAccessToken)
         inputs:
-          tasks: common4j:assemble $(projVersionParam)
+          tasks: common4j:assemble $(projVersionParam) common4j:dependencies --write-locks  $(projVersionParam)
       - task: CopyFiles@2
         displayName: Copy Build output to Artifact Directory
         inputs:
@@ -80,7 +80,7 @@ stages:
           useDefaultDetectors: false
           detectorsToRun: 'Maven'
           verbosity: 'Verbose'
-          sourceScanPath: '$(Build.SourcesDirectory)/common4j'
+          sourceScanPath: '$(Build.SourcesDirectory)/common4j/gradle'
           alertWarningLevel: 'High'
       - task: ManifestGeneratorTask@0
         displayName: 'Manifest Generation Task'

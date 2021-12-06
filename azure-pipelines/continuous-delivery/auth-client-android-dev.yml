@@ -69,8 +69,13 @@ stages:
           ENV_VSTS_MVN_ANDROIDCOMMON_ACCESSTOKEN: $(mvnAccessToken)
         inputs:
           tasks: common4j:assemble $(projVersionParam)
+      - task: CopyFiles@2
+        displayName: Copy Build output to Artifact Directory
+        inputs:
+          SourceFolder: common4j\build\
+          TargetFolder: '$(System.ArtifactsDirectory)/buildOutput'
       - task: ManifestGeneratorTask@0
-        displayName: 'Generation Task'
+        displayName: 'Manifest Generation Task'
         inputs:
           BuildDropPath: '$(System.ArtifactsDirectory)/buildOutput'
       - task: PublishPipelineArtifact@1

@@ -72,7 +72,7 @@ stages:
       - task: CopyFiles@2
         displayName: Copy Build output to Artifact Directory
         inputs:
-          SourceFolder: $(Build.SourcesDirectory)/common4j/build/
+          SourceFolder: $(Build.SourcesDirectory)/common4j/build/libs/
           TargetFolder: '$(System.ArtifactsDirectory)/buildOutput'
       - task: ComponentGovernanceComponentDetection@0
         inputs:

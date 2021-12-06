@@ -73,14 +73,36 @@ stages:
         displayName: Copy Build output to Artifact Directory
         inputs:
           SourceFolder: $(Build.SourcesDirectory)/common4j/build/libs/
-          TargetFolder: '$(System.ArtifactsDirectory)/buildOutput'
+          TargetFolder: '$(System.ArtifactsDirectory)/buildOutput/common4j/'
+      - task: CopyFiles@2
+        displayName: Copy Build output to Artifact Directory
+        inputs:
+          SourceFolder: '$(Build.SourcesDirectory)/common4j/gradle/dependency-locks/'
+          TargetFolder: '$(System.ArtifactsDirectory)/buildOutput/dependency-locks/common4j/'
+      - task: Gradle@3
+        displayName: Build and publish common4j
+        env:
+          ENV_VSTS_MVN_ANDROIDCOMMON_USERNAME: $(mvnUserName)
+          ENV_VSTS_MVN_ANDROIDCOMMON_ACCESSTOKEN: $(mvnAccessToken)
+        inputs:
+          tasks: common:assembleDist $(projVersionParam) common:dependencies --write-locks  $(projVersionParam)
+      - task: CopyFiles@2
+        displayName: Copy Build output to Artifact Directory
+        inputs:
+          SourceFolder: $(Build.SourcesDirectory)/common/build/libs/
+          TargetFolder: '$(System.ArtifactsDirectory)/buildOutput/common/'
+      - task: CopyFiles@2
+        displayName: Copy Build output to Artifact Directory
+        inputs:
+          SourceFolder: '$(Build.SourcesDirectory)/common/gradle/dependency-locks/'
+          TargetFolder: '$(System.ArtifactsDirectory)/buildOutput/dependency-locks/common/'
       - task: ComponentGovernanceComponentDetection@0
         inputs:
           scanType: 'LogOnly'
           useDefaultDetectors: false
           detectorsToRun: 'Maven'
           verbosity: 'Verbose'
-          sourceScanPath: '$(Build.SourcesDirectory)/common4j/gradle'
+          sourceScanPath: $(System.ArtifactsDirectory)/buildOutput/dependency-locks/'
           alertWarningLevel: 'High'
       - task: ManifestGeneratorTask@0
         displayName: 'Manifest Generation Task'
@@ -89,6 +111,6 @@ stages:
       - task: PublishPipelineArtifact@1
         inputs:
           targetPath: '$(System.ArtifactsDirectory)/buildOutput'
-          artifact: 'SBOM'
+          artifact: 'BuildOutput'
           publishLocation: 'pipeline'
 ...

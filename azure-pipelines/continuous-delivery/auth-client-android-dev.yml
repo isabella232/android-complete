@@ -69,13 +69,6 @@ stages:
           ENV_VSTS_MVN_ANDROIDCOMMON_ACCESSTOKEN: $(mvnAccessToken)
         inputs:
           tasks: common4j:assemble $(projVersionParam)
-      - task: Gradle@3
-        displayName: Build and publish android common
-        env:
-          ENV_VSTS_MVN_ANDROIDCOMMON_USERNAME: $(mvnUserName)
-          ENV_VSTS_MVN_ANDROIDCOMMON_ACCESSTOKEN: $(mvnAccessToken)
-        inputs:
-          tasks: common:assembleDist $(projVersionParam) $(common4jVersionParam)
       - task: ManifestGeneratorTask@0
         displayName: 'Generation Task'
         inputs:

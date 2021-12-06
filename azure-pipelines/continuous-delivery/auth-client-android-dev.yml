@@ -72,7 +72,7 @@ stages:
       - task: CopyFiles@2
         displayName: Copy Build output to Artifact Directory
         inputs:
-          SourceFolder: common4j\build\
+          SourceFolder: $(Build.SourcesDirectory)/common4j/build/
           TargetFolder: '$(System.ArtifactsDirectory)/buildOutput'
       - task: ManifestGeneratorTask@0
         displayName: 'Manifest Generation Task'

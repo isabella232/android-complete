@@ -89,7 +89,7 @@ stages:
       - task: CopyFiles@2
         displayName: Copy Build output to Artifact Directory
         inputs:
-          SourceFolder: $(Build.SourcesDirectory)/common/build/libs/
+          SourceFolder: $(Build.SourcesDirectory)/common/build/outputs/aar/
           TargetFolder: '$(System.ArtifactsDirectory)/buildOutput/common/'
       - task: CopyFiles@2
         displayName: Copy Build output to Artifact Directory

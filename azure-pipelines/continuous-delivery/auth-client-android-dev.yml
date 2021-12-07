@@ -9,13 +9,6 @@ name: 0.0.$(Date:yyyyMMdd)-dev$(Rev:.r) # $(Build.BuildNumber) = name
 pr: none
 trigger: none
 
-schedules:
-  - cron: "0 22 * * 1-5" # 10 PM everyday Mon-Fri
-    displayName: Auth Client Android SDK dev build
-    branches:
-      include:
-      - master
-    always: true
 
 resources:
   repositories:

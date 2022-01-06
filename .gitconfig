@@ -83,9 +83,6 @@
         cd $workDir/msal/; printf '\n' ; printf "${RED}MSAL${NC}"; printf '%s\n' ": "; git branch; \
         cd $workDir/broker/; printf '\n' ; printf "${RED}BROKER${NC}"; printf '%s\n' ": "; git branch; \
         cd $workDir/common/; printf '\n' ; printf "${RED}COMMON${NC}"; printf '%s\n' ": "; git branch; \
-        cd $workDir/msalcpp/; printf '\n' ; printf "${RED}MSALCPP${NC}"; printf '%s\n' ": "; git branch; \
-        cd $workDir/oneauth/; printf '\n' ; printf "${RED}ONEAUTH${NC}"; printf '%s\n' ": "; git branch; \
-        cd $workDir/tsl/; printf '\n' ; printf "${RED}TSL${NC}"; printf '%s\n' ": "; git branch; \
     }; f"
     droidStash = "!f() { \
             workDir=$(git config --get androidcomplete.workDir); \
